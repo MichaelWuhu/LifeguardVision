@@ -1,72 +1,61 @@
 # broncohacks2025
 
 ## setup instructions
-### frontend
-#### 
-1. install node (v20 or later)
 
-#### 2. 
-```
-cd frontend/
-```
-
-#### 3. 
+## Frontend
+Before doing any of the steps below, cd into the frontend folder
+### 1. Install node_modules
 ```
 npm install
 ```
 
-#### 4. 
+### 2. Run the Dev Environment
 ```
 npm run dev
 ```
 
-#### 5. 
+#### 3. Open the App
 go to http://localhost:3000/ and u should see somethin
 
 ----------------------------------------------------------------
 
-### backend
-
-#### 1. 
-install python
-
-#### 2.
-```
-cd backend/
-```
-
-#### 3.
+## Backend
+Before doing any of the steps below, cd into the backend folder and install python
+### 1. Create a Virtual Environment
+#### macOS/Linux:
 ```
 python -m venv venv
-```
--or- 
-```
-python3 -m venv venv
-```
-(depends on which one u hav installed)
-
-#### 4. 
-```
 source venv/bin/activate
 ```
+
+#### Windows (PowerShell):
+```
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+```
+
+you might have to use ``python3`` instead of ``python`` (depends on which one u hav installed)
+
 you should see (venv) before your path in the terminal like this:
 <img width="752" alt="image" src="https://github.com/user-attachments/assets/a02f4086-4851-41fe-8065-96c9cc48659e" />
 
-#### 5. 
+### 2. Install Dependencies
 ```
-pip install
+pip install -r requirements.txt
 ```
 
-#### 6. 
+### 3. To Run the App
 ```
 uvicorn main:app --reload
 ```
-(make sure that the right interpreter is selected)
 
-#### 7. 
+### 4. Open the Backend
 go to http://127.0.0.1:8000/ and u should see somethin
 
-#### 8. 
-to deactivate virtual environment (venv) run ```deactivate```
+### 5. To Exit the Virtual Environment Run
+```
+deactivate
+```
+
 
 
