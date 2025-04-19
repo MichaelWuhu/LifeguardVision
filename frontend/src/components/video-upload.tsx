@@ -1,8 +1,6 @@
 "use client"
 
-import type React from "react"
-
-import { useState, useRef } from "react"
+import React, { useState, useRef } from "react"
 import { Upload, File, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -10,6 +8,7 @@ import { Card } from "@/components/ui/card"
 export default function VideoUpload() {
   const [files, setFiles] = useState<File[]>([])
   const [isDragging, setIsDragging] = useState(false)
+  const [notification, setNotification] = useState<{ message: string, type: "success" | "error" } | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -42,55 +41,80 @@ export default function VideoUpload() {
     setFiles((prev) => prev.filter((_, i) => i !== index))
   }
 
+  const showNotification = (message: string, type: "success" | "error") => {
+    setNotification({ message, type })
+    setTimeout(() => {
+      setNotification(null)
+    }, 10000)
+  }
+
   const handleUpload = async () => {
     try {
       for (const file of files) {
-        const formData = new FormData();
-        formData.append('file', file);
+        const formData = new FormData()
+        formData.append("file", file)
 
-        const response = await fetch('http://127.0.0.1:8000/api/upload', {
-          method: 'POST',
+        const response = await fetch("http://127.0.0.1:8000/api/upload", {
+          method: "POST",
           body: formData,
-        });
+        })
 
         if (!response.ok) {
-          throw new Error(`Upload failed: ${response.statusText}`);
+          throw new Error(`Upload failed: ${response.statusText}`)
         }
 
-        const result = await response.json();
-        console.log('Upload successful:', result);
+        await response.json()
+        console.log("Upload successful for", file.name)
       }
-      
-      // Clear the files after successful upload
-      setFiles([]);
-      alert('Upload completed successfully!');
+
+      // Clear the files after a successful upload
+      setFiles([])
+      showNotification("Upload completed successfully!", "success")
     } catch (error) {
-      console.error('Upload error:', error);
-      alert('Upload failed. Please try again.');
+      console.error("Upload error:", error)
+      showNotification("Upload failed. Please try again.", "error")
     }
   }
 
   return (
     <div className="space-y-4">
-    <Card
-      className={`border-2 border-dashed p-8 text-center max-w-md mx-auto ${
-        isDragging ? "border-primary bg-primary/5" : "border-gray-300"
-      }`}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
-    >
-      <div className="flex flex-col items-center justify-center gap-2">
-        <Upload className="h-10 w-10 text-gray-400" />
-        <h3 className="text-lg font-medium">Drag and drop your files here</h3>
-        <p className="text-sm text-gray-500">or</p>
-        <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
-        Browse Files
-        </Button>
-        <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="video/mp4,video/quicktime"/>
-        <p className="text-xs text-gray-500 mt-2">Supported file types: MP4, MOV</p>
-      </div>
-    </Card>
+      {notification && (
+        <div
+          className={`max-w-md mx-auto rounded-md p-4 text-center ${
+            notification.type === "success"
+              ? "bg-green-100 text-green-800"
+              : "bg-red-100 text-red-800"
+          }`}
+        >
+          {notification.message}
+        </div>
+      )}
+
+      <Card
+        className={`border-2 border-dashed p-8 text-center max-w-md mx-auto ${
+          isDragging ? "border-primary bg-primary/5" : "border-gray-300"
+        }`}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
+        <div className="flex flex-col items-center justify-center gap-2">
+          <Upload className="h-10 w-10 text-gray-400" />
+          <h3 className="text-lg font-medium">Drag and drop your files here</h3>
+          <p className="text-sm text-gray-500">or</p>
+          <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
+            Browse Files
+          </Button>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            className="hidden"
+            accept="video/mp4,video/quicktime"
+          />
+          <p className="text-xs text-gray-500 mt-2">Supported file types: MP4, MOV</p>
+        </div>
+      </Card>
 
       {files.length > 0 && (
         <div className="space-y-4 max-w-md mx-auto">
