@@ -139,6 +139,6 @@ async def upload_file(file: UploadFile = File(...)):
             # Calculate how long processing took and sleep for the remainder of the target interval
             processing_time = time.time() - start_time
             sleep_time = max(0, target_interval - processing_time)
-            time.sleep(sleep_time)
+            await asyncio.sleep(sleep_time)
     
     return {"status": 200}
