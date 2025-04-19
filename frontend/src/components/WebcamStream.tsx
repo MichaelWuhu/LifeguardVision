@@ -6,16 +6,17 @@ export default function WebcamStream() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [alert, setAlert] = useState(false);
   const [frameBase64, setFrameBase64] = useState<string | null>(null);
-  const [showLines, setShowLines] = useState(true);
+  const [showLines, setShowLines] = useState(false);
 
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:8000/ws/stream");
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log("Server response:", data); // LOG 1 (from server)
+      const {frame, ...rest} = data;
+      console.log("Server response:", rest); // LOG 1 (from server)
       setAlert(data.alert);
-      if (data.frame) {
+      if (frame) {
         setFrameBase64(`data:image/jpeg;base64,${data.frame}`);
       }
     };
