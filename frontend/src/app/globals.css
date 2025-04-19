@@ -8,11 +8,6 @@
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  height: 200em;
-}
-
-body {
   font-family: 'Outfit', Arial, Helvetica, sans-serif;
 }
 
@@ -21,7 +16,7 @@ html {
 }
 
 [id] {
-  scroll-margin-top: 12rem;
+  scroll-margin-top: 10rem;
 }
 
 @layer utilities {
