@@ -5,18 +5,19 @@ import Image from 'next/image';
 import { Info, Settings } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 
-function getDeviceName(): Promise<string> {
-  return navigator.mediaDevices.enumerateDevices().then((devices) => {
-    const videoDevice = devices.find((device) => device.kind === 'videoinput');
-    return videoDevice?.label || '';
-  });
+async function getDeviceName(): Promise<string> {
+  const devices = await navigator.mediaDevices.enumerateDevices();
+  const videoDevice = devices.find((device) => device.kind === 'videoinput');
+  return videoDevice?.label || 'Attempting to access camera...';
 }
 
 export default function CameraView() {
   const [isOperational, setIsOperational] = useState(false);
   const [autoDialEnabled, setAutoDialEnabled] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [deviceName, setDeviceName] = useState<string>('Attempting to access camera...');
+  const [deviceName, setDeviceName] = useState<string>(
+    'Attempting to access camera...'
+  );
 
   useEffect(() => {
     getDeviceName().then((name) => setDeviceName(name));
@@ -47,31 +48,41 @@ export default function CameraView() {
 
   return (
     <div className="min-h-screen bg-white">
-      <header className="flex items-center justify-between p-4 border-b">
-        <div className="flex items-center gap-3">
-          <div className="relative w-10 h-10">
-            <Image
-              src="/logo.svg"
-              alt="Lifeguard Vision Logo"
-              fill
-              className="object-contain"
-            />
+      {/* Header */}
+      <header className="w-full p-4">
+        <nav className="container mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="bg-white rounded-full p-1">
+              <Image
+                src="/logo.svg"
+                alt="Lifeguard Vision"
+                className="object-contain"
+                width={40}
+                height={40}
+              ></Image>
+            </div>
+            <h1 className="text-xl font-serif italic font-bold">
+              Lifeguard Vision
+            </h1>
           </div>
-          <h1 className="font-bold text-2xl text-gray-700">Lifeguard Vision</h1>
-        </div>
-        <button className="flex items-center gap-2 text-gray-700">
-          <span className="text-xl">Settings</span>
-          <Settings className="w-8 h-8" />
-        </button>
+          <button className="flex items-center gap-2 text-gray-700">
+            <span className="text-xl">Settings</span>
+            <Settings className="w-8 h-8" />
+          </button>
+        </nav>
       </header>
 
       <main className="flex py-5 px-15 md:px-30 lg:px-50 gap-4">
         <div className="flex-1">
           <div className="flex justify-between items-center mb-2">
-            <h2 className="text-xl text-gray-700">{deviceName}</h2>
+            <h2 className="text-sm sm:text-lg md:text-xl text-gray-700">
+              {deviceName}
+            </h2>
             <div className="flex items-center gap-2">
-              <span className="text-xl text-gray-700">
-                Vision Status: Operational
+              <span className="text-sm sm:text-lg md:text-xl text-gray-700">
+                {isOperational
+                  ? 'Vision Status: Operational'
+                  : 'Vision Status: Offline'}
               </span>
               <div
                 className={`w-4 h-4 rounded-full  ${
