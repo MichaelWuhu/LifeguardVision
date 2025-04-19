@@ -1,4 +1,4 @@
-import WebcamStream from "@/components/WebcamStream";
+import WebcamStream from "@/components/webcam-stream";
 
 export default function LivePage() {
   return (
