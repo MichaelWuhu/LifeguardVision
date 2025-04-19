@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Info, Settings } from 'lucide-react';
+import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Info, Settings } from "lucide-react";
 import {
   TooltipProvider,
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-} from '@/components/ui/tooltip';
-import VideoUpload from '@/components/video-upload';
+} from "@/components/ui/tooltip";
+import VideoUpload from "@/components/video-upload";
 
 async function getDeviceName(): Promise<string> {
   const devices = await navigator.mediaDevices.enumerateDevices();
-  const videoDevice = devices.find((device) => device.kind === 'videoinput');
-  return videoDevice?.label || 'Attempting to access camera...';
+  const videoDevice = devices.find((device) => device.kind === "videoinput");
+  return videoDevice?.label || "Attempting to access camera...";
 }
 
 export default function CameraView() {
@@ -26,31 +26,33 @@ export default function CameraView() {
   const [isOperational, setIsOperational] = useState(false);
   const [openSettings, setOpenSettings] = useState(false);
   const [deviceName, setDeviceName] = useState<string>(
-    'Attempting to access camera...'
+    "Attempting to access camera..."
   );
   const [autoDial, setAutoDial] = useState(false);
   const [toggleLines, setToggleLines] = useState(false);
   const [uploadVideo, setUploadVideo] = useState(false);
 
-  const [inputSource, setInputSource] = useState<'camera' | 'file'>('camera');
+  const [inputSource, setInputSource] = useState<"camera" | "file">("camera");
   const [videoFile, setVideoFile] = useState<string | null>(null);
 
   const wsRef = useRef<WebSocket | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
+  const [showAlertBanner, setShowAlertBanner] = useState(false);
+
   useEffect(() => {
     if (wsRef.current) {
       wsRef.current.close();
     }
 
-    const ws = new WebSocket('ws://localhost:8000/ws/stream');
+    const ws = new WebSocket("ws://localhost:8000/ws/stream");
     wsRef.current = ws;
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       const { frame, ...rest } = data;
-      console.log('Server response:', rest); // LOG 1 (from server)
+      console.log("Server response:", rest); // LOG 1 (from server)
       setAlert(data.alert);
       if (frame) {
         setFrameBase64(`data:image/jpeg;base64,${frame}`);
@@ -135,27 +137,56 @@ export default function CameraView() {
   useEffect(() => {
     const handleVideoReady = (e: CustomEvent) => {
       const url = e.detail;
-      console.log('📹 Video is ready to play:', url);
+      console.log("📹 Video is ready to play:", url);
       setVideoFile(url);
-      setInputSource('file');
+      setInputSource("file");
     };
 
-    window.addEventListener('video-ready', handleVideoReady as EventListener);
+    window.addEventListener("video-ready", handleVideoReady as EventListener);
 
     return () => {
       window.removeEventListener(
-        'video-ready',
+        "video-ready",
         handleVideoReady as EventListener
       );
     };
   }, []);
 
   useEffect(() => {
+    const handleUploadStart = () => {
+      setShowAlertBanner(true);
+    };
+  
+    window.addEventListener("video-upload-started", handleUploadStart);
+  
+    return () => {
+      window.removeEventListener("video-upload-started", handleUploadStart);
+    };
+  }, [showAlertBanner]);
+
+  useEffect(() => {
+    const handleUploadEnd = () => {
+      setShowAlertBanner(false);
+    };
+  
+    window.addEventListener("video-upload-ended", handleUploadEnd);
+  
+    return () => {
+      window.removeEventListener("video-upload-ended", handleUploadEnd);
+    };
+  }, [showAlertBanner]);
+
+  useEffect(() => {
+    console.log("✅ showAlertBanner changed to:", showAlertBanner);
+  }, [showAlertBanner]);
+  
+
+  useEffect(() => {
     getDeviceName().then((name) => setDeviceName(name));
   }, []);
 
   useEffect(() => {
-    setInputSource(uploadVideo ? 'file' : 'camera');
+    setInputSource(uploadVideo ? "file" : "camera");
   }, [uploadVideo]);
 
   return (
@@ -203,7 +234,7 @@ export default function CameraView() {
             ref={canvasRef}
             style={{ display: 'none' }}
           />
-          <div
+          {showAlertBanner ? <div
             className="m-5 w-30 mx-auto z-10 px-4 py-2 rounded-lg bg-opacity-75"
             style={{
               backgroundColor: alert
@@ -217,6 +248,9 @@ export default function CameraView() {
               <p className="text-white font-medium">✓ All clear</p>
             )}
           </div>
+          :
+          <div />
+          }
         </div>
       ) : (
         <main
@@ -393,7 +427,7 @@ export default function CameraView() {
                   checked={uploadVideo}
                   onChange={(e) => {
                     setUploadVideo(e.target.checked);
-                    setInputSource(e.target.checked ? 'file' : 'camera');
+                    setInputSource(e.target.checked ? "file" : "camera");
                   }}
                 />
                 <div className="w-11 h-6 bg-gray-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-400"></div>
