@@ -311,6 +311,7 @@ export default function CameraView() {
                 )}
               </div>
               {frameBase64 && toggleLines && (
+                /* eslint-disable @next/next/no-img-element */
                 <img
                   src={frameBase64}
                   alt="Live pose frame"
