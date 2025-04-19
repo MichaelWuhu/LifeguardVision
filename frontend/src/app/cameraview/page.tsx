@@ -186,6 +186,7 @@ export default function CameraView() {
   }, []);
 
   useEffect(() => {
+
     setInputSource(uploadVideo ? "file" : "camera");
   }, [uploadVideo]);
 
@@ -351,9 +352,7 @@ export default function CameraView() {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Info
-                        className={`w-4 h-4 transition-transform duration-300`}
-                      />
+                      <Info className="w-4 h-4 transition-transform duration-300" />
                     </TooltipTrigger>
                     <TooltipContent>
                       <p className="bg-white border-1 rounded-md p-2">
@@ -362,13 +361,16 @@ export default function CameraView() {
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-                <span>Auto Dial 911</span>
+                <span className={uploadVideo ? "text-gray-400" : "text-black"}>
+                  Auto Dial 911
+                </span>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
                   className="sr-only peer"
                   checked={autoDial}
+                  disabled={uploadVideo}
                   onChange={(e) => setAutoDial(e.target.checked)}
                 />
                 <div className="w-11 h-6 bg-gray-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-400"></div>
@@ -426,8 +428,12 @@ export default function CameraView() {
                   className="sr-only peer"
                   checked={uploadVideo}
                   onChange={(e) => {
-                    setUploadVideo(e.target.checked);
-                    setInputSource(e.target.checked ? "file" : "camera");
+                    const checked = e.target.checked;
+                    setUploadVideo(checked);
+                    setInputSource(checked ? 'file' : 'camera');
+                    if (checked) {
+                      setAutoDial(false);
+                    }
                   }}
                 />
                 <div className="w-11 h-6 bg-gray-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-400"></div>
