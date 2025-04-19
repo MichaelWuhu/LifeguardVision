@@ -8,12 +8,15 @@
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  height: 200em;
+  font-family: 'Outfit', Arial, Helvetica, sans-serif;
 }
 
-body {
-  font-family: 'Outfit', Arial, Helvetica, sans-serif;
+html {
+  scroll-behavior: smooth;
+}
+
+[id] {
+  scroll-margin-top: 10rem;
 }
 
 html {

@@ -12,11 +12,14 @@ timer = 0
 
 @router.websocket("/ws/stream")
 async def stream_endpoint(websocket: WebSocket):
+    global timer
     await manager.connect(websocket)
     print("WebSocket connection accepted")
 
     try:
         while True:
+            is_drowning = False
+
             binary_data = await websocket.receive_bytes()
             np_arr = np.frombuffer(binary_data, np.uint8)
             frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
