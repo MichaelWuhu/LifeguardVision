@@ -83,12 +83,15 @@ export default function Home() {
       </div>
 
       <p className="text-lg md:text-xl text-white/90 text-center leading-relaxed mt-10 px-4 max-w-3xl mx-auto mb-4">
-        Drowning is a leading cause of unintentional death globally, claiming over 372,000 lives each year, with young children 
+        Drowning is a leading cause of unintentional death globally, claiming over 320,000 lives each year, with young children 
         being especially vulnerable—drowning is the top cause of accidental death for children aged 1 to 4. In the U.S. alone, an 
         average of 10 people drown daily, and thousands more suffer severe, often life-altering injuries. Most incidents occur in 
         residential pools, often within minutes and without warning, even with supervision present. With many victims going unnoticed 
         until it's too late, there's a clear need for an upgrade in surveillance that can detect drowning in real time and automatically alert 
-        EMS—ensuring a faster, life-saving response when every second counts.
+        EMS—ensuring a faster, life-saving response when every second counts. 
+      </p>
+      <p className="font-italic text-white/90 text-center mt-4">
+        <strong>Source:</strong> <a href="https://www.stopdrowningnow.org/drowning-statistics/#:~:text=US%20Drowning%20Statistics,from%205%2D15%20years%20old." className="underline hover:text-white">stopdrowningnow.org</a>
       </p>
     </div>
 
