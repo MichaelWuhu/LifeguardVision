@@ -9,6 +9,7 @@
 
 body {
   color: rgb(var(--foreground-rgb));
+  height: 150em;
 }
 
 body {
