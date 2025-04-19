@@ -2,6 +2,7 @@ from fastapi import APIRouter, WebSocket
 import cv2
 import numpy as np
 from utils.pose import detect_pose_landmarks
+from utils.distressDetection import detector
 import base64
 
 router = APIRouter()
@@ -28,6 +29,10 @@ async def stream_endpoint(websocket: WebSocket):
                 await websocket.send_json({"alert": False, "message": "No person detected"})
                 continue
             
+            # for part in ["RIGHT_WRIST"]:
+            #     if part in pose_data:
+            #         print(f"{part} x value: {pose_data[part][0]}, y value: {pose_data[part][1]}")
+
             await websocket.send_json({
                 "alert": False,
                 "message": "Pose detected",
