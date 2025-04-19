@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useRef } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { Info, Settings } from "lucide-react";
+import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Info, Settings } from 'lucide-react';
 import {
   TooltipProvider,
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-} from "@/components/ui/tooltip";
-import VideoUpload from "@/components/video-upload";
+} from '@/components/ui/tooltip';
+import VideoUpload from '@/components/video-upload';
 
 async function getDeviceName(): Promise<string> {
   const devices = await navigator.mediaDevices.enumerateDevices();
-  const videoDevice = devices.find((device) => device.kind === "videoinput");
-  return videoDevice?.label || "Attempting to access camera...";
+  const videoDevice = devices.find((device) => device.kind === 'videoinput');
+  return videoDevice?.label || 'Attempting to access camera...';
 }
 
 export default function CameraView() {
@@ -26,13 +26,13 @@ export default function CameraView() {
   const [isOperational, setIsOperational] = useState(false);
   const [openSettings, setOpenSettings] = useState(false);
   const [deviceName, setDeviceName] = useState<string>(
-    "Attempting to access camera..."
+    'Attempting to access camera...'
   );
   const [autoDial, setAutoDial] = useState(false);
   const [toggleLines, setToggleLines] = useState(false);
   const [uploadVideo, setUploadVideo] = useState(false);
 
-  const [inputSource, setInputSource] = useState<"camera" | "file">("camera");
+  const [inputSource, setInputSource] = useState<'camera' | 'file'>('camera');
   const [videoFile, setVideoFile] = useState<string | null>(null);
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -46,13 +46,13 @@ export default function CameraView() {
       wsRef.current.close();
     }
 
-    const ws = new WebSocket("ws://localhost:8000/ws/stream");
+    const ws = new WebSocket('ws://localhost:8000/ws/stream');
     wsRef.current = ws;
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       const { frame, ...rest } = data;
-      console.log("Server response:", rest); // LOG 1 (from server)
+      console.log('Server response:', rest); // LOG 1 (from server)
       setAlert(data.alert);
       if (frame) {
         setFrameBase64(`data:image/jpeg;base64,${frame}`);
@@ -61,58 +61,46 @@ export default function CameraView() {
 
     if (inputSource === 'camera') {
       navigator.mediaDevices
-        .getUserMedia({ video: true })
+        .getUserMedia({
+          video: {
+            aspectRatio: 16 / 9,
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+          },
+        })
         .then((stream) => {
           if (videoRef.current) {
             videoRef.current.srcObject = stream;
-            videoRef.current.play();
             streamRef.current = stream;
+
+            videoRef.current
+              .play()
+              .then(() => {
+                intervalRef.current = setInterval(() => {
+                  if (!canvasRef.current || !videoRef.current) return;
+                  const ctx = canvasRef.current.getContext('2d');
+                  if (!ctx) return;
+
+                  canvasRef.current.width = videoRef.current.videoWidth;
+                  canvasRef.current.height = videoRef.current.videoHeight;
+                  ctx.drawImage(videoRef.current, 0, 0);
+
+                  canvasRef.current.toBlob((blob) => {
+                    if (blob && ws.readyState === WebSocket.OPEN) {
+                      ws.send(blob);
+                    }
+                  }, 'image/jpeg');
+                }, 250);
+              })
+              .catch((err) => {
+                console.error('Autoplay failed:', err);
+              });
           }
-
-          intervalRef.current = setInterval(() => {
-            if (!canvasRef.current || !videoRef.current) return;
-            const ctx = canvasRef.current.getContext('2d');
-            if (!ctx) return;
-
-            canvasRef.current.width = videoRef.current.videoWidth;
-            canvasRef.current.height = videoRef.current.videoHeight;
-            ctx.drawImage(videoRef.current, 0, 0);
-
-            canvasRef.current.toBlob((blob) => {
-              if (blob && ws.readyState === WebSocket.OPEN) {
-                ws.send(blob);
-              }
-            }, 'image/jpeg');
-          }, 250);
         })
         .catch((err) => {
           console.error('Camera access failed or aborted by user:', err);
         });
-    } else if (inputSource === 'file' && videoFile) {
-      if (videoRef.current) {
-        videoRef.current.srcObject = null;
-        videoRef.current.src = videoFile;
-        videoRef.current.play();
-        setIsOperational(true);
-
-        intervalRef.current = setInterval(() => {
-          if (!canvasRef.current || !videoRef.current) return;
-          const ctx = canvasRef.current.getContext('2d');
-          if (!ctx) return;
-
-          canvasRef.current.width = videoRef.current.videoWidth;
-          canvasRef.current.height = videoRef.current.videoHeight;
-          ctx.drawImage(videoRef.current, 0, 0);
-
-          canvasRef.current.toBlob((blob) => {
-            if (blob && wsRef.current?.readyState === WebSocket.OPEN) {
-              wsRef.current.send(blob);
-            }
-          }, 'image/jpeg');
-        }, 250); // 4 fps
-      }
     }
-
     return () => {
       // 🔁 CLEANUP on mode switch
       if (wsRef.current) {
@@ -137,16 +125,16 @@ export default function CameraView() {
   useEffect(() => {
     const handleVideoReady = (e: CustomEvent) => {
       const url = e.detail;
-      console.log("📹 Video is ready to play:", url);
+      console.log('📹 Video is ready to play:', url);
       setVideoFile(url);
-      setInputSource("file");
+      setInputSource('file');
     };
 
-    window.addEventListener("video-ready", handleVideoReady as EventListener);
+    window.addEventListener('video-ready', handleVideoReady as EventListener);
 
     return () => {
       window.removeEventListener(
-        "video-ready",
+        'video-ready',
         handleVideoReady as EventListener
       );
     };
@@ -156,11 +144,11 @@ export default function CameraView() {
     const handleUploadStart = () => {
       setShowAlertBanner(true);
     };
-  
-    window.addEventListener("video-upload-started", handleUploadStart);
-  
+
+    window.addEventListener('video-upload-started', handleUploadStart);
+
     return () => {
-      window.removeEventListener("video-upload-started", handleUploadStart);
+      window.removeEventListener('video-upload-started', handleUploadStart);
     };
   }, [showAlertBanner]);
 
@@ -168,26 +156,24 @@ export default function CameraView() {
     const handleUploadEnd = () => {
       setShowAlertBanner(false);
     };
-  
-    window.addEventListener("video-upload-ended", handleUploadEnd);
-  
+
+    window.addEventListener('video-upload-ended', handleUploadEnd);
+
     return () => {
-      window.removeEventListener("video-upload-ended", handleUploadEnd);
+      window.removeEventListener('video-upload-ended', handleUploadEnd);
     };
   }, [showAlertBanner]);
 
   useEffect(() => {
-    console.log("✅ showAlertBanner changed to:", showAlertBanner);
+    console.log('✅ showAlertBanner changed to:', showAlertBanner);
   }, [showAlertBanner]);
-  
 
   useEffect(() => {
     getDeviceName().then((name) => setDeviceName(name));
   }, []);
 
   useEffect(() => {
-
-    setInputSource(uploadVideo ? "file" : "camera");
+    setInputSource(uploadVideo ? 'file' : 'camera');
   }, [uploadVideo]);
 
   return (
@@ -235,23 +221,26 @@ export default function CameraView() {
             ref={canvasRef}
             style={{ display: 'none' }}
           />
-          {showAlertBanner ? <div
-            className="m-5 w-30 mx-auto z-10 px-4 py-2 rounded-lg bg-opacity-75"
-            style={{
-              backgroundColor: alert
-                ? 'rgba(239, 68, 68, 0.9)'
-                : 'rgba(34, 197, 94, 0.9)',
-            }}
-          >
-            {alert ? (
-              <p className="text-white font-bold text-lg">⚠️ ALERT DETECTED</p>
-            ) : (
-              <p className="text-white font-medium">✓ All clear</p>
-            )}
-          </div>
-          :
-          <div />
-          }
+          {showAlertBanner ? (
+            <div
+              className="m-5 w-30 mx-auto z-10 px-4 py-2 rounded-lg bg-opacity-75"
+              style={{
+                backgroundColor: alert
+                  ? 'rgba(239, 68, 68, 0.9)'
+                  : 'rgba(34, 197, 94, 0.9)',
+              }}
+            >
+              {alert ? (
+                <p className="text-white font-bold text-lg">
+                  ⚠️ ALERT DETECTED
+                </p>
+              ) : (
+                <p className="text-white font-medium">✓ All clear</p>
+              )}
+            </div>
+          ) : (
+            <div />
+          )}
         </div>
       ) : (
         <main
@@ -361,7 +350,7 @@ export default function CameraView() {
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-                <span className={uploadVideo ? "text-gray-400" : "text-black"}>
+                <span className={uploadVideo ? 'text-gray-400' : 'text-black'}>
                   Auto Dial 911
                 </span>
               </div>
