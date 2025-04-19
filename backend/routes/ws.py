@@ -3,8 +3,8 @@ import cv2
 import numpy as np
 from utils.pose import detect_pose_landmarks
 from utils.distressDetection import detector
-import base64
 from utils.motion import update_and_check_stillness
+import base64
 
 router = APIRouter()
 
@@ -33,7 +33,7 @@ async def stream_endpoint(websocket: WebSocket):
             is_still = update_and_check_stillness(pose_data)
             is_drowning = is_still
             # print("Alert status:", is_drowning)
-            print("NOSE", pose_data["NOSE"])
+            # print("NOSE", pose_data["NOSE"])
 
             await websocket.send_json({
                 "alert": is_drowning,
