@@ -73,7 +73,9 @@ export default function CameraView() {
         })
         .then((stream) => {
           if (videoRef.current) {
-            videoRef.current.srcObject = stream;
+            videoRef.current.srcObject = null;
+            videoRef.current.src = ''; // Clear any file mode src
+            videoRef.current.srcObject = stream; // Now safely assign stream
             streamRef.current = stream;
 
             videoRef.current
