@@ -106,7 +106,7 @@ export default function CameraView() {
         }, 250); // 4 fps
       }
     }
-
+  
     return () => {
       // 🔁 CLEANUP on mode switch
       if (wsRef.current) {
