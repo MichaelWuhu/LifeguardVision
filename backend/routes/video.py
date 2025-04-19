@@ -16,7 +16,6 @@ import asyncio
 from utils.ws_manager import manager
 
 timer = 0
-
 router = APIRouter()
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -142,4 +141,4 @@ async def upload_file(file: UploadFile = File(...)):
             sleep_time = max(0, target_interval - processing_time)
             time.sleep(sleep_time)
     
-    return {"status OOGABOOGA": 200}
+    return {"status": 200}
