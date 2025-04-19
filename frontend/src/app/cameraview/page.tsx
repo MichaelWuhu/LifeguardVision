@@ -39,6 +39,8 @@ export default function CameraView() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
+  const [showAlertBanner, setShowAlertBanner] = useState(false);
+
   useEffect(() => {
     if (wsRef.current) {
       wsRef.current.close();
@@ -147,6 +149,35 @@ export default function CameraView() {
   }, []);
 
   useEffect(() => {
+    const handleUploadStart = () => {
+      setShowAlertBanner(true);
+    };
+  
+    window.addEventListener("video-upload-started", handleUploadStart);
+  
+    return () => {
+      window.removeEventListener("video-upload-started", handleUploadStart);
+    };
+  }, [showAlertBanner]);
+
+  useEffect(() => {
+    const handleUploadEnd = () => {
+      setShowAlertBanner(false);
+    };
+  
+    window.addEventListener("video-upload-ended", handleUploadEnd);
+  
+    return () => {
+      window.removeEventListener("video-upload-ended", handleUploadEnd);
+    };
+  }, [showAlertBanner]);
+
+  useEffect(() => {
+    console.log("✅ showAlertBanner changed to:", showAlertBanner);
+  }, [showAlertBanner]);
+  
+
+  useEffect(() => {
     getDeviceName().then((name) => setDeviceName(name));
   }, []);
 
@@ -193,6 +224,7 @@ export default function CameraView() {
         <div>
           <VideoUpload />
           <canvas ref={canvasRef} style={{ display: "none" }} />
+          { showAlertBanner ? 
           <div
             className="m-5 w-30 mx-auto z-10 px-4 py-2 rounded-lg bg-opacity-75"
             style={{
@@ -207,6 +239,9 @@ export default function CameraView() {
               <p className="text-white font-medium">✓ All clear</p>
             )}
           </div>
+          :
+          <div></div>
+          }
         </div>
       ) : (
         <main

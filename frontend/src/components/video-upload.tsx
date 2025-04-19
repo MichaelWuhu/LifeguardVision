@@ -86,15 +86,15 @@ export default function VideoUpload() {
           throw new Error(`Upload failed: ${response.statusText}`);
         }
 
+        // ⬇️ Notify parent view
+        // if (data.video_url) {
+        // window.dispatchEvent(new CustomEvent("video-ready", { detail: data.video_url }));
+        // }
+
         const data = await response.json();
         console.log("Upload successful:", data);
+        window.dispatchEvent(new Event("video-upload-ended"));
 
-        // ⬇️ Notify parent view
-        if (data.video_url) {
-          window.dispatchEvent(
-            new CustomEvent("video-ready", { detail: data.video_url })
-          );
-        }
       }
 
       setFiles([]);
@@ -108,6 +108,7 @@ export default function VideoUpload() {
   const playVideo = () => {
     console.log("shouldPlay:", shouldPlay);
     console.log("videoRef.current exists:", videoRef.current);
+    window.dispatchEvent(new Event("video-upload-started"));
     if (shouldPlay && videoRef.current) {
       videoRef.current.play().catch((err) => {
         console.warn("Autoplay blocked:", err);
