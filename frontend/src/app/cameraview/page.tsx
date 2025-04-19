@@ -180,7 +180,7 @@ export default function CameraView() {
     <div className="min-h-screen bg-white select-none caret-transparent">
       {/* Header */}
       <div className="w-full bg-white reative z-10">
-        <nav className="container mx-auto flex items-center justify-between px-8 py-5">
+        <nav className="container mx-auto flex items-center justify-between px-7 py-5">
           <div className="flex items-center gap-2">
             <Link
               href="/"
@@ -201,7 +201,7 @@ export default function CameraView() {
             </Link>
           </div>
           <button
-            className="border-1 border-black bg-red-200 hover:bg-red-400 group flex items-center gap-2 text-gray-800 px-4 py-2 rounded-md font-medium transition-transform duration-200 hover:scale-105"
+            className='border-1 border-black bg-red-200 hover:bg-red-400 group flex items-center gap-2 text-gray-800 px-4 py-2 rounded-md font-medium transition-transform duration-200 hover:scale-105'
             onClick={() => setOpenSettings(!openSettings)}
           >
             <span className="text-medium">Settings</span>
@@ -306,11 +306,10 @@ export default function CameraView() {
                 )}
               </div>
               {frameBase64 && toggleLines && (
-                /* eslint-disable-next-line @next/next/no-img-element */
                 <img
                   src={frameBase64}
                   alt="Live pose frame"
-                  className="mt-4 rounded shadow max-w-full"
+                  className="absolute top-0 left-0 w-full h-full object-contain pointer-events-none"
                 />
               )}
               {!isOperational && (
@@ -320,7 +319,7 @@ export default function CameraView() {
                 </div>
               )}
             </div>
-            <div className="flex justify-end py-3">
+            <div className="flex justify-end pt-3">
               <button
                 className="bg-red-400 hover:bg-red-500 text-gray-800 font-bold py-3 px-12 rounded-md text-xl transition-colors"
                 onClick={() => window.alert('Emergency call initiated')}
@@ -370,9 +369,7 @@ export default function CameraView() {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Info
-                        className={`w-4 h-4 transition-transform duration-300`}
-                      />
+                      <Info className="w-4 h-4 transition-transform duration-300" />
                     </TooltipTrigger>
                     <TooltipContent>
                       <p className="bg-white border-1 rounded-md p-2">
