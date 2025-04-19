@@ -56,7 +56,7 @@ export default function Home() {
               href="/cameraview"
               className="border-1 border-black bg-red-200 hover:bg-red-400 text-black px-4 py-2 rounded-md font-medium transition-colors"
             >
-              Use it now! →
+              Try it now! →
             </Link>
           </nav>
 
