@@ -103,6 +103,8 @@ export default function CameraView() {
               autoPlay
               playsInline
               className="w-full h-full object-cover rounded-md"
+              // crossOrigin ensures the <video> element is rendered consistently between server-side and client-side hydration.
+              crossOrigin="anonymous"
               onLoadedData={() => {
                 setIsOperational(true);
                 getDeviceName().then((name) => setDeviceName(name));
