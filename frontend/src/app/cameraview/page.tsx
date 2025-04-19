@@ -14,12 +14,13 @@ async function getDeviceName(): Promise<string> {
 
 export default function CameraView() {
   const [isOperational, setIsOperational] = useState(false);
-  // const [autoDialEnabled, setAutoDialEnabled] = useState(true);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [openSettings, setOpenSettings] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [deviceName, setDeviceName] = useState<string>(
     'Attempting to access camera...'
   );
+  const [autoDial, setAutoDial] = useState(false);
+  const [toggleLines, setToggleLines] = useState(false);
 
   useEffect(() => {
     getDeviceName().then((name) => setDeviceName(name));
@@ -71,13 +72,13 @@ export default function CameraView() {
         </Link>
         <button
           className="group flex items-center gap-2 text-gray-800 transition-transform duration-200 hover:scale-105"
-          onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+          onClick={() => setOpenSettings(!openSettings)}
         >
           <span className="text-xl">Settings</span>
           <Settings
             className={`w-8 h-8 transition-transform duration-300 group-hover:rotate-120`}
             style={{
-              transform: isSettingsOpen ? 'rotate(120deg)' : 'rotate(0deg)',
+              transform: openSettings ? 'rotate(120deg)' : 'rotate(0deg)',
             }}
           />
         </button>
@@ -85,7 +86,7 @@ export default function CameraView() {
 
       <main
         className={`flex px-15 md:px-30 lg:px-50 gap-4 flex-1 p-4 transition-all duration-300 ease-in-out ${
-          isSettingsOpen ? 'translate-x-[-5vw]' : ''
+          openSettings ? 'translate-x-[-5vw]' : ''
         }`}
       >
         <div className="flex-1">
@@ -143,28 +144,31 @@ export default function CameraView() {
       </main>
 
       {/* Settings panel */}
-      {isSettingsOpen && (
+      {openSettings && (
         <div className="fixed right-8 top-17 w-55 bg-gray-300 rounded-md p-6 overflow-y-auto">
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <span>Auto Dial 911</span>
               <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="sr-only peer"
-                  defaultChecked
-                />
-                <div className="w-11 h-6 bg-gray-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
+              <input
+                type="checkbox"
+                className="sr-only peer"
+                checked={autoDial}
+                onChange={(e) => setAutoDial(e.target.checked)}
+              />
+              <div className="w-11 h-6 bg-gray-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
               </label>
             </div>
             <div className="flex justify-between items-center">
               <span>Toggle Lines</span>
               <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
+              <input
+                type="checkbox"
+                className="sr-only peer"
+                checked={toggleLines}
+                onChange={(e) => setToggleLines(e.target.checked)}
+              />
+              <div className="w-11 h-6 bg-gray-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
               </label>
             </div>
           </div>
