@@ -43,7 +43,7 @@ export function WavyWater() {
       ctx.closePath()
 
       // Fill with a dark blue color
-      ctx.fillStyle = "#A1CEFF"
+      ctx.fillStyle = "#BBE1FF"
       ctx.fill()
 
       // Animate
