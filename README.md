@@ -1,61 +1,57 @@
-# Lifeguard Vision
+# 🛟 [Lifeguard Vision](https://lifeguard-vision.vercel.app/)
+A web app leveraging artificial intelligence to assist lifeguards in rapidly identifying potential drowning incidents and alerting emergency services before the situation escalates.  
 
-## setup instructions
+Built by Michael Wu (Lead), Jayden Nguyen (Backend), Brandon Tseng (Frontend), and Timothy Huang (Frontend) for the BroncoHacks 2025 24-Hour Hackathon.
 
-## Frontend
-Before doing any of the steps below, cd into the frontend folder
-### 1. Install node_modules
+Demo Video: https://youtu.be/mfYDPStKLiI. 
+## 🖼️ Preview
+<img width="1551" alt="Landing Page" src="https://github.com/user-attachments/assets/6cd1be3b-d4c1-41fe-8a69-92cbeb194185" />
+
+<img width="1564" alt="Camera View" src="https://github.com/user-attachments/assets/527e868a-c106-4be8-884c-2903ecafc3ae" />
+
+## 🔧 Dev Environment Setup
+### Frontend
+1. Navigate to the frontend directory
+```
+cd frontend
+```
+2. Install node_modules
 ```
 npm install
 ```
-
-### 2. Run the Dev Environment
+3. Run the dev environment
 ```
 npm run dev
 ```
+### Backend
+1. Navigate to the backend directory
+```
+cd backend
+```
+2. Create a Virtual Environment
 
-#### 3. Open the App
-go to http://localhost:3000/ and u should see somethin
-
-----------------------------------------------------------------
-
-## Backend
-Before doing any of the steps below, cd into the backend folder and install python
-### 1. Create a Virtual Environment
-#### macOS/Linux:
+May need to use python3 depending on what version you have.
+<details><summary>macOS/Linux</summary>
+  
 ```
 python -m venv venv
 source venv/bin/activate
 ```
-
-#### Windows (PowerShell):
+</details>
+<details><summary>Windows (PowerShell)</summary>
+  
 ```
 python -m venv venv
 .\venv\Scripts\Activate.ps1
 ```
+</details>
 
-you might have to use ``python3`` instead of ``python`` (depends on which one u hav installed)
-
-you should see (venv) before your path in the terminal like this:
-<img width="752" alt="image" src="https://github.com/user-attachments/assets/a02f4086-4851-41fe-8065-96c9cc48659e" />
-
-### 2. Install Dependencies
-```
-pip install -r requirements.txt
-```
-
-### 3. To Run the App
+3. Run the backend
 ```
 uvicorn main:app --reload
 ```
 
-### 4. Open the Backend
-go to http://127.0.0.1:8000/ and u should see somethin
-
-### 5. To Exit the Virtual Environment Run
+4. If you need to exit the VENV
 ```
 deactivate
 ```
-
-
-
