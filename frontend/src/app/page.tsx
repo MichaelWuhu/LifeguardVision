@@ -7,7 +7,7 @@ export default function Home() {
     <main className="min-h-screen flex flex-col relative overflow-hidden">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-sky-200 to-blue-500 -z-10" />
-
+      <div className="w-full bg-white shadow-md relative z-10">
       {/* Navigation bar */}
       <header className="w-full p-4">
         <nav className="container mx-auto flex items-center justify-between">
@@ -35,11 +35,13 @@ export default function Home() {
           </Link>
         </nav>
       </header>
+    
 
       {/* Wavy water line with floating element */}
-      <div className="relative w-full mt-12">
+      <div className="relative w-full mt-5">
         <WavyWater />
       </div>
+    </div>
 
       {/* Content area */}
       <div className="container mx-auto flex-1 px-4 py-12">{/* Add your content here */}</div>
