@@ -4,7 +4,12 @@ import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Info, Settings } from 'lucide-react';
-import { Switch } from '@/components/ui/switch';
+import {
+  TooltipProvider,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from '@/components/ui/tooltip';
 
 async function getDeviceName(): Promise<string> {
   const devices = await navigator.mediaDevices.enumerateDevices();
@@ -86,7 +91,7 @@ export default function CameraView() {
 
       <main
         className={`flex px-15 md:px-30 lg:px-50 gap-4 flex-1 p-4 transition-all duration-300 ease-in-out ${
-          openSettings ? 'translate-x-[-5vw]' : ''
+          openSettings ? 'translate-x-[-6vw]' : ''
         }`}
       >
         <div className="flex-1">
@@ -145,30 +150,62 @@ export default function CameraView() {
 
       {/* Settings panel */}
       {openSettings && (
-        <div className="fixed right-8 top-17 w-55 bg-gray-300 rounded-md p-6 overflow-y-auto">
+        <div className="fixed right-8 top-17 w-60 bg-white border-1 border-gray-500 rounded-md p-6 overflow-y-auto">
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <span>Auto Dial 911</span>
+              <div className="flex items-center gap-2">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info
+                        className={`w-4 h-4 transition-transform duration-300`}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="bg-white border-1 rounded-md p-2">
+                        Auto dial 911 when drowning is detected after 3 seconds.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <span>Auto Dial 911</span>
+              </div>
               <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                className="sr-only peer"
-                checked={autoDial}
-                onChange={(e) => setAutoDial(e.target.checked)}
-              />
-              <div className="w-11 h-6 bg-gray-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={autoDial}
+                  onChange={(e) => setAutoDial(e.target.checked)}
+                />
+                <div className="w-11 h-6 bg-gray-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-400"></div>
               </label>
             </div>
             <div className="flex justify-between items-center">
-              <span>Toggle Lines</span>
+              <div className="flex items-center gap-2">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info
+                        className={`w-4 h-4 transition-transform duration-300`}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="bg-white border-1 rounded-md p-2">
+                        Toggle the appearance of Vision lines over footage.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <span>Toggle Lines</span>
+              </div>
               <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                className="sr-only peer"
-                checked={toggleLines}
-                onChange={(e) => setToggleLines(e.target.checked)}
-              />
-              <div className="w-11 h-6 bg-gray-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={toggleLines}
+                  onChange={(e) => setToggleLines(e.target.checked)}
+                />
+                <div className="w-11 h-6 bg-gray-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-400"></div>
               </label>
             </div>
           </div>
