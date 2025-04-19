@@ -65,29 +65,36 @@ export default function CameraView() {
               height={40}
             ></Image>
           </div>
-          <h1 className="text-xl font-serif italic font-bold">
+          <h1 className="text-xl font-serif text-gray-800 italic font-bold">
             Lifeguard Vision
           </h1>
         </Link>
         <button
-          className="group flex items-center gap-2 text-gray-700 transition-transform duration-200 hover:scale-105"
+          className="group flex items-center gap-2 text-gray-800 transition-transform duration-200 hover:scale-105"
           onClick={() => setIsSettingsOpen(!isSettingsOpen)}
         >
           <span className="text-xl">Settings</span>
-          <Settings className="w-8 h-8 transition-transform duration-300 group-hover:rotate-120" />
+          <Settings
+            className={`w-8 h-8 transition-transform duration-300 group-hover:rotate-120`}
+            style={{
+              transform: isSettingsOpen ? 'rotate(120deg)' : 'rotate(0deg)',
+            }}
+          />
         </button>
       </header>
 
-      <main className={`flex px-15 md:px-30 lg:px-50 gap-4 flex-1 p-4 transition-all duration-300 ease-in-out ${
-          isSettingsOpen ? 'translate-x-[-10vw]' : ''
-        }`}>
+      <main
+        className={`flex px-15 md:px-30 lg:px-50 gap-4 flex-1 p-4 transition-all duration-300 ease-in-out ${
+          isSettingsOpen ? 'translate-x-[-5vw]' : ''
+        }`}
+      >
         <div className="flex-1">
           <div className="flex justify-between items-center mb-2">
-            <h2 className="text-sm sm:text-lg md:text-xl text-gray-700">
+            <h2 className="text-sm sm:text-lg md:text-xl text-gray-800">
               {deviceName}
             </h2>
             <div className="flex items-center gap-2">
-              <span className="text-sm sm:text-lg md:text-xl text-gray-700">
+              <span className="text-sm sm:text-lg md:text-xl text-gray-800">
                 {isOperational
                   ? 'Vision Status: Operational'
                   : 'Vision Status: Offline'}
@@ -120,7 +127,7 @@ export default function CameraView() {
             />
             {!isOperational && (
               <div className="absolute inset-0 flex items-center justify-center bg-gray-200 bg-opacity-80">
-                <p className="text-xl text-gray-700">Camera not available</p>
+                <p className="text-xl text-gray-800">Camera not available</p>
               </div>
             )}
           </div>
@@ -135,48 +142,30 @@ export default function CameraView() {
         </div>
       </main>
 
-      {/* Settings panel that slides in from the right */}
+      {/* Settings panel */}
       {isSettingsOpen && (
-        <div className="fixed top-[72px] right-0 w-80 bg-gray-100 border-l border-gray-200 p-6 overflow-y-auto transition-all duration-300 ease-in-out">
-          <h2 className="text-2xl font-medium text-gray-700 mb-6">Settings</h2>
-
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-medium mb-4">Camera Settings</h3>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span>Auto Dial 911</span>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      className="sr-only peer"
-                      defaultChecked
-                    />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
-                  </label>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span>Motion Detection</span>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      className="sr-only peer"
-                    />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
-                  </label>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span>Emergency Alerts</span>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      className="sr-only peer"
-                      defaultChecked
-                    />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
-                  </label>
-                </div>
-              </div>
+        <div className="fixed right-8 top-17 w-55 bg-gray-300 rounded-md p-6 overflow-y-auto">
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <span>Auto Dial 911</span>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  defaultChecked
+                />
+                <div className="w-11 h-6 bg-gray-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
+              </label>
+            </div>
+            <div className="flex justify-between items-center">
+              <span>Toggle Lines</span>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
+              </label>
             </div>
           </div>
         </div>
