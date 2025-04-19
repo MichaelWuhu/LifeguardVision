@@ -10,7 +10,7 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from '@/components/ui/tooltip';
-// import WebcamStream from "@/components/webcam-stream";
+import VideoUpload from '@/components/video-upload';
 
 async function getDeviceName(): Promise<string> {
   const devices = await navigator.mediaDevices.enumerateDevices();
@@ -32,6 +32,9 @@ export default function CameraView() {
   const [toggleLines, setToggleLines] = useState(false);
   const [uploadVideo, setUploadVideo] = useState(false);
 
+  const [inputSource, setInputSource] = useState<'camera' | 'file'>('camera');
+  const [videoFile, setVideoFile] = useState<string | null>(null);
+
   useEffect(() => {
     const ws = new WebSocket('ws://localhost:8000/ws/stream');
 
@@ -45,33 +48,40 @@ export default function CameraView() {
       }
     };
 
-    navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+    if (inputSource === 'camera') {
+      navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          videoRef.current.play();
+        }
+
+        const interval = setInterval(() => {
+          if (!canvasRef.current || !videoRef.current) return;
+
+          const ctx = canvasRef.current.getContext('2d');
+          if (!ctx) return;
+
+          canvasRef.current.width = videoRef.current.videoWidth;
+          canvasRef.current.height = videoRef.current.videoHeight;
+
+          ctx.drawImage(videoRef.current, 0, 0);
+          canvasRef.current.toBlob((blob) => {
+            if (blob && ws.readyState === WebSocket.OPEN) {
+              // console.log("Sending frame to backend..."); // LOG 2 (to server)
+              ws.send(blob);
+            }
+          }, 'image/jpeg');
+        }, 250); // Send a frame every 250ms
+
+        return () => clearInterval(interval);
+      });
+    } else if (inputSource === 'file' && videoFile) {
       if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        videoRef.current.play();
+        videoRef.current.srcObject = null;
+        videoRef.current.src = videoFile;
+        setIsOperational(true);
       }
-
-      const interval = setInterval(() => {
-        if (!canvasRef.current || !videoRef.current) return;
-
-        const ctx = canvasRef.current.getContext('2d');
-        if (!ctx) return;
-
-        canvasRef.current.width = videoRef.current.videoWidth;
-        canvasRef.current.height = videoRef.current.videoHeight;
-
-        ctx.drawImage(videoRef.current, 0, 0);
-        canvasRef.current.toBlob((blob) => {
-          if (blob && ws.readyState === WebSocket.OPEN) {
-            // console.log("Sending frame to backend..."); // LOG 2 (to server)
-            ws.send(blob);
-          }
-        }, 'image/jpeg');
-      }, 250); // Send a frame every 250ms
-
-      return () => clearInterval(interval);
-    });
-
+    }
     return () => {
       ws.close();
     };
@@ -79,29 +89,6 @@ export default function CameraView() {
 
   useEffect(() => {
     getDeviceName().then((name) => setDeviceName(name));
-  }, []);
-
-  useEffect(() => {
-    if (typeof navigator !== 'undefined') {
-      navigator.mediaDevices
-        .getUserMedia({ video: { width: 1920, height: 1080 } })
-        .then((stream) => {
-          if (videoRef.current) {
-            videoRef.current.srcObject = stream;
-          }
-        })
-        .catch((err) => {
-          console.error('Error accessing camera:', err);
-          setIsOperational(false);
-        });
-    }
-
-    return () => {
-      if (videoRef.current && videoRef.current.srcObject) {
-        const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
-        tracks.forEach((track) => track.stop());
-      }
-    };
   }, []);
 
   return (
@@ -138,8 +125,8 @@ export default function CameraView() {
           />
         </button>
       </header>
-
-      <main
+            
+      {uploadVideo ? <VideoUpload /> : <main
         className={`flex px-15 md:px-30 lg:px-50 gap-4 flex-1 p-4 transition-all duration-300 ease-in-out ${
           openSettings ? 'translate-x-[-6vw]' : ''
         }`}
@@ -215,7 +202,7 @@ export default function CameraView() {
             </button>
           </div>
         </div>
-      </main>
+      </main>}
 
       {/* Settings panel */}
       {openSettings && (
