@@ -1,20 +1,24 @@
-"use client";
-import { useEffect, useRef, useState } from "react";
+'use client';
+import { useEffect, useRef, useState } from 'react';
 
 export default function WebcamStream() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [alert, setAlert] = useState(false);
   const [frameBase64, setFrameBase64] = useState<string | null>(null);
-  const [showLines, setShowLines] = useState(false);
+  const [showLines, setShowLines] = useState(true);
+
+  const toggleShowLines = () => {
+    setShowLines(!showLines);
+  };
 
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:8000/ws/stream");
+    const ws = new WebSocket('ws://localhost:8000/ws/stream');
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      const {frame, ...rest} = data;
-      console.log("Server response:", rest); // LOG 1 (from server)
+      const { frame, ...rest } = data;
+      console.log('Server response:', rest); // LOG 1 (from server)
       setAlert(data.alert);
       if (frame) {
         setFrameBase64(`data:image/jpeg;base64,${data.frame}`);
@@ -30,7 +34,7 @@ export default function WebcamStream() {
       const interval = setInterval(() => {
         if (!canvasRef.current || !videoRef.current) return;
 
-        const ctx = canvasRef.current.getContext("2d");
+        const ctx = canvasRef.current.getContext('2d');
         if (!ctx) return;
 
         canvasRef.current.width = videoRef.current.videoWidth;
@@ -42,7 +46,7 @@ export default function WebcamStream() {
             // console.log("Sending frame to backend..."); // LOG 2 (to server)
             ws.send(blob);
           }
-        }, "image/jpeg");
+        }, 'image/jpeg');
       }, 250); // Send a frame every 250ms
 
       return () => clearInterval(interval);
@@ -55,8 +59,14 @@ export default function WebcamStream() {
 
   return (
     <div>
-      <video ref={videoRef} className="rounded shadow" />
-      <canvas ref={canvasRef} style={{ display: "none" }} />
+      <video
+        ref={videoRef}
+        className="rounded shadow"
+      />
+      <canvas
+        ref={canvasRef}
+        style={{ display: 'none' }}
+      />
       <div className="mt-4">
         {alert ? (
           <p className="text-red-600 font-bold text-lg">ALERT DETECTED</p>
@@ -72,6 +82,12 @@ export default function WebcamStream() {
           className="mt-4 rounded shadow max-w-full"
         />
       )}
+      <button
+        className="bg-gray-300"
+        onClick={toggleShowLines}
+      >
+        Toggle Lines
+      </button>
     </div>
   );
 }
