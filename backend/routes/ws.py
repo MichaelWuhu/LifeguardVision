@@ -40,7 +40,7 @@ async def stream_endpoint(websocket: WebSocket):
             if is_still and head_below_water:
                 timer += 1
                 print("Timer:", timer)
-                if timer >= 20: # 5 seconds (change later to 240)
+                if timer >= 12: # 3 seconds (change later to 240)
                     is_drowning = True
             else:
                 timer = 0

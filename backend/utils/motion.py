@@ -21,8 +21,11 @@ def compute_axis_displacement(p1, p2):
     dy = abs(p1[1] - p2[1])
     return dx, dy
 
-def update_and_check_stillness(current_landmarks, threshold_x=0.02, threshold_y=0.05,
-                                still_required=40, active_required=3):
+def update_and_check_stillness(current_landmarks, threshold_x=0.015, threshold_y=0.025,
+                                # still_required=40,
+                                still_required=1, 
+                                active_required=4
+                                ):
     global still_count, active_count, is_alert_active, last_pose
 
     if last_pose is None:
