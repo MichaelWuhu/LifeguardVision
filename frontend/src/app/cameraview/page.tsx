@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Info, Settings } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 
@@ -13,7 +14,7 @@ async function getDeviceName(): Promise<string> {
 
 export default function CameraView() {
   const [isOperational, setIsOperational] = useState(false);
-  const [autoDialEnabled, setAutoDialEnabled] = useState(true);
+  // const [autoDialEnabled, setAutoDialEnabled] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [deviceName, setDeviceName] = useState<string>(
     'Attempting to access camera...'
@@ -47,32 +48,33 @@ export default function CameraView() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white select-none caret-transparent">
       {/* Header */}
-      <header className="w-full p-4">
-        <nav className="container mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="bg-white rounded-full p-1">
-              <Image
-                src="/logo.svg"
-                alt="Lifeguard Vision"
-                className="object-contain"
-                width={40}
-                height={40}
-              ></Image>
-            </div>
-            <h1 className="text-xl font-serif italic font-bold">
-              Lifeguard Vision
-            </h1>
+      <header className="flex justify-between items-center p-7">
+        <Link
+          href="/"
+          className="flex items-center gap-2"
+        >
+          <div className="bg-white rounded-full p-1">
+            <Image
+              src="/logo.svg"
+              alt="Lifeguard Vision"
+              className="object-contain"
+              width={40}
+              height={40}
+            ></Image>
           </div>
-          <button className="flex items-center gap-2 text-gray-700">
-            <span className="text-xl">Settings</span>
-            <Settings className="w-8 h-8" />
-          </button>
-        </nav>
+          <h1 className="text-xl font-serif italic font-bold">
+            Lifeguard Vision
+          </h1>
+        </Link>
+        <button className="flex items-center gap-2 text-gray-700">
+          <span className="text-xl">Settings</span>
+          <Settings className="w-8 h-8" />
+        </button>
       </header>
 
-      <main className="flex py-5 px-15 md:px-30 lg:px-50 gap-4">
+      <main className="flex px-15 md:px-30 lg:px-50 gap-4">
         <div className="flex-1">
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-sm sm:text-lg md:text-xl text-gray-700">
