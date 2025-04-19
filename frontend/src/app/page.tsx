@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <main className="min-h-screen flex flex-col relative overflow-hidden">
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-sky-200 to-blue-500 -z-10" />
+      <div className="fixed inset-0 bg-gradient-to-b from-sky-200 via-blue-400 to-blue-600 -z-10"/><div></div>
       <div className="w-full bg-white shadow-md relative z-10">
       {/* Navigation bar */}
       <header className="w-full p-4">
@@ -19,6 +19,9 @@ export default function Home() {
           </div>
 
           <div className="hidden md:flex items-center gap-6">
+            <Link href="#who-we-help" className="text-gray-800 hover:underline font-medium">
+              Who We Help
+            </Link>
             <Link href="#how-it-works" className="text-gray-800 hover:underline font-medium">
               How It Works
             </Link>
@@ -44,17 +47,27 @@ export default function Home() {
     </div>
 
     {/* Content area */}
+    <div className="container mx-auto flex-1 px-4 py-12 mt-6">
+      <div className="max-w-5xl mx-auto text-center">
         <div className="container mx-auto flex-1 px-4 py-12">
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white drop-shadow-lg mb-6 tracking-tight">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-white">
               Welcome to Lifeguard Vision
             </span>
           </h2>
-        <div className="relative h-1 bg-white/50 rounded-full mx-auto mb-10 overflow-hidden">
+
+        <div className="relative h-1 bg-white/50 rounded-full mx-auto mb-1 overflow-hidden">
           <div className="absolute inset-0 bg-white"></div>
           </div>
         </div>
-      
+
+        <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-1 leading-relaxed">
+        Leveraging artificial intelligence to assist lifeguards in rapidly identifying potential drowning incidents and alerting emergency services before the situation escalates.        </p>
+      </div>
+    </div>
+    
+
+    
     </main>
   )
 }
