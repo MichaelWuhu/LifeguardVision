@@ -42,10 +42,32 @@ export default function VideoUpload() {
     setFiles((prev) => prev.filter((_, i) => i !== index))
   }
 
-  const handleUpload = () => {
-    // Implement your upload logic here
-    console.log("Files to upload:", files)
-    alert(`Ready to upload ${files.length} files. Implementation needed.`)
+  const handleUpload = async () => {
+    try {
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await fetch('http://127.0.0.1:8000/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error(`Upload failed: ${response.statusText}`);
+        }
+
+        const result = await response.json();
+        console.log('Upload successful:', result);
+      }
+      
+      // Clear the files after successful upload
+      setFiles([]);
+      alert('Upload completed successfully!');
+    } catch (error) {
+      console.error('Upload error:', error);
+      alert('Upload failed. Please try again.');
+    }
   }
 
   return (
