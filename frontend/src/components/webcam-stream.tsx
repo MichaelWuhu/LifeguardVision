@@ -6,7 +6,7 @@ export default function WebcamStream() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [alert, setAlert] = useState(false);
   const [frameBase64, setFrameBase64] = useState<string | null>(null);
-  const [showLines, setShowLines] = useState(false);
+  const [showLines, setShowLines] = useState(true);
 
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:8000/ws/stream");
