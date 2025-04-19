@@ -2,6 +2,7 @@ from fastapi import APIRouter, WebSocket
 import cv2
 import numpy as np
 from utils.pose import detect_pose_landmarks
+import base64
 
 router = APIRouter()
 
@@ -20,7 +21,9 @@ async def stream_endpoint(websocket: WebSocket):
                 await websocket.send_json({"error": "Invalid frame"})
                 continue
 
-            pose_data = detect_pose_landmarks(frame)
+            pose_data = detect_pose_landmarks(frame, draw=True)
+            _, buffer = cv2.imencode(".jpg", frame)
+            frame_base64 = base64.b64encode(buffer).decode("utf-8")
             if pose_data is None:
                 await websocket.send_json({"alert": False, "message": "No person detected"})
                 continue
@@ -28,7 +31,8 @@ async def stream_endpoint(websocket: WebSocket):
             await websocket.send_json({
                 "alert": False,
                 "message": "Pose detected",
-                "landmarks": pose_data
+                "landmarks": pose_data,
+                "frame": frame_base64
             })
 
     except Exception as e:
