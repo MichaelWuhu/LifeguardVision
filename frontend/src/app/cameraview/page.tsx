@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useRef } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { Info, Settings } from "lucide-react";
+import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Info, Settings } from 'lucide-react';
 import {
   TooltipProvider,
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-} from "@/components/ui/tooltip";
-import VideoUpload from "@/components/video-upload";
+} from '@/components/ui/tooltip';
+import VideoUpload from '@/components/video-upload';
 
 async function getDeviceName(): Promise<string> {
   const devices = await navigator.mediaDevices.enumerateDevices();
-  const videoDevice = devices.find((device) => device.kind === "videoinput");
-  return videoDevice?.label || "Attempting to access camera...";
+  const videoDevice = devices.find((device) => device.kind === 'videoinput');
+  return videoDevice?.label || 'Attempting to access camera...';
 }
 
 export default function CameraView() {
@@ -26,13 +26,13 @@ export default function CameraView() {
   const [isOperational, setIsOperational] = useState(false);
   const [openSettings, setOpenSettings] = useState(false);
   const [deviceName, setDeviceName] = useState<string>(
-    "Attempting to access camera..."
+    'Attempting to access camera...'
   );
   const [autoDial, setAutoDial] = useState(false);
   const [toggleLines, setToggleLines] = useState(false);
   const [uploadVideo, setUploadVideo] = useState(false);
 
-  const [inputSource, setInputSource] = useState<"camera" | "file">("camera");
+  const [inputSource, setInputSource] = useState<'camera' | 'file'>('camera');
   const [videoFile, setVideoFile] = useState<string | null>(null);
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -44,45 +44,49 @@ export default function CameraView() {
       wsRef.current.close();
     }
 
-    const ws = new WebSocket("ws://localhost:8000/ws/stream");
+    const ws = new WebSocket('ws://localhost:8000/ws/stream');
     wsRef.current = ws;
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       const { frame, ...rest } = data;
-      console.log("Server response:", rest); // LOG 1 (from server)
+      console.log('Server response:', rest); // LOG 1 (from server)
       setAlert(data.alert);
       if (frame) {
         setFrameBase64(`data:image/jpeg;base64,${frame}`);
       }
     };
 
-    if (inputSource === "camera") {
-      navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          videoRef.current.play();
-          streamRef.current = stream;
-        }
+    if (inputSource === 'camera') {
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((stream) => {
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+            videoRef.current.play();
+            streamRef.current = stream;
+          }
 
-        intervalRef.current = setInterval(() => {
-          if (!canvasRef.current || !videoRef.current) return;
-          const ctx = canvasRef.current.getContext("2d");
-          if (!ctx) return;
+          intervalRef.current = setInterval(() => {
+            if (!canvasRef.current || !videoRef.current) return;
+            const ctx = canvasRef.current.getContext('2d');
+            if (!ctx) return;
 
-          canvasRef.current.width = videoRef.current.videoWidth;
-          canvasRef.current.height = videoRef.current.videoHeight;
-          ctx.drawImage(videoRef.current, 0, 0);
+            canvasRef.current.width = videoRef.current.videoWidth;
+            canvasRef.current.height = videoRef.current.videoHeight;
+            ctx.drawImage(videoRef.current, 0, 0);
 
-          canvasRef.current.toBlob((blob) => {
-            if (blob && ws.readyState === WebSocket.OPEN) {
-              // console.log("Sending frame to backend..."); // LOG 2 (to server)
-              ws.send(blob);
-            }
-          }, "image/jpeg");
-        }, 250);
-      });
-    } else if (inputSource === "file" && videoFile) {
+            canvasRef.current.toBlob((blob) => {
+              if (blob && ws.readyState === WebSocket.OPEN) {
+                ws.send(blob);
+              }
+            }, 'image/jpeg');
+          }, 250);
+        })
+        .catch((err) => {
+          console.error('Camera access failed or aborted by user:', err);
+        });
+    } else if (inputSource === 'file' && videoFile) {
       if (videoRef.current) {
         videoRef.current.srcObject = null;
         videoRef.current.src = videoFile;
@@ -91,7 +95,7 @@ export default function CameraView() {
 
         intervalRef.current = setInterval(() => {
           if (!canvasRef.current || !videoRef.current) return;
-          const ctx = canvasRef.current.getContext("2d");
+          const ctx = canvasRef.current.getContext('2d');
           if (!ctx) return;
 
           canvasRef.current.width = videoRef.current.videoWidth;
@@ -102,11 +106,11 @@ export default function CameraView() {
             if (blob && wsRef.current?.readyState === WebSocket.OPEN) {
               wsRef.current.send(blob);
             }
-          }, "image/jpeg");
+          }, 'image/jpeg');
         }, 250); // 4 fps
       }
     }
-  
+
     return () => {
       // 🔁 CLEANUP on mode switch
       if (wsRef.current) {
@@ -131,16 +135,16 @@ export default function CameraView() {
   useEffect(() => {
     const handleVideoReady = (e: CustomEvent) => {
       const url = e.detail;
-      console.log("📹 Video is ready to play:", url);
+      console.log('📹 Video is ready to play:', url);
       setVideoFile(url);
-      setInputSource("file");
+      setInputSource('file');
     };
 
-    window.addEventListener("video-ready", handleVideoReady as EventListener);
+    window.addEventListener('video-ready', handleVideoReady as EventListener);
 
     return () => {
       window.removeEventListener(
-        "video-ready",
+        'video-ready',
         handleVideoReady as EventListener
       );
     };
@@ -151,7 +155,7 @@ export default function CameraView() {
   }, []);
 
   useEffect(() => {
-    setInputSource(uploadVideo ? "file" : "camera");
+    setInputSource(uploadVideo ? 'file' : 'camera');
   }, [uploadVideo]);
 
   return (
