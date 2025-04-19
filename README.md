@@ -1,7 +1,7 @@
 # 🛟 [Lifeguard Vision](https://lifeguard-vision.vercel.app/)
 A web app leveraging artificial intelligence to assist lifeguards in rapidly identifying potential drowning incidents and alerting emergency services before the situation escalates.  
 
-Built by Michael Wu (Lead), Jayden Nguyen (Backend), Brandon Tseng (Frontend), and Timothy Huang (Frontend) for the BroncoHacks 2025 24-Hour Hackathon.
+Built by [Michael Wu](https://github.com/MichaelWuhu) (Lead), [Jayden Nguyen](https://github.com/Jayvnn) (Backend), [Brandon Tseng](https://github.com/PlainOlSoapBar) (Frontend), and [Timothy Huang](https://github.com/timothyhuang513) (Frontend) for the BroncoHacks 2025 24-Hour Hackathon.
 
 Demo Video: https://youtu.be/mfYDPStKLiI. 
 ## 🖼️ Preview
