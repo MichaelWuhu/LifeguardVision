@@ -90,11 +90,6 @@ export default function Home() {
       EMS—ensuring a faster, life-saving response when every second counts.
       </p>
     </div>
-
-    <div>
-      
-
-    </div>
     
     </main>
   )
