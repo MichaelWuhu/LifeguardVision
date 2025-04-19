@@ -5,6 +5,8 @@ export default function WebcamStream() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [alert, setAlert] = useState(false);
+  const [frameBase64, setFrameBase64] = useState<string | null>(null);
+  const [showLines, setShowLines] = useState(true);
 
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:8000/ws/stream");
@@ -13,6 +15,9 @@ export default function WebcamStream() {
       const data = JSON.parse(event.data);
       console.log("Server response:", data); // LOG 1 (from server)
       setAlert(data.alert);
+      if (data.frame) {
+        setFrameBase64(`data:image/jpeg;base64,${data.frame}`);
+      }
     };
 
     navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
@@ -37,7 +42,6 @@ export default function WebcamStream() {
             ws.send(blob);
           }
         }, "image/jpeg");
-        
       }, 250); // Send a frame every 250ms
 
       return () => clearInterval(interval);
@@ -59,6 +63,14 @@ export default function WebcamStream() {
           <p className="text-green-600 font-medium">All clear</p>
         )}
       </div>
+      {frameBase64 && showLines && (
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img
+          src={frameBase64}
+          alt="Live pose frame"
+          className="mt-4 rounded shadow max-w-full"
+        />
+      )}
     </div>
   );
 }
