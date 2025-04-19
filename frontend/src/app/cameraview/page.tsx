@@ -59,32 +59,36 @@ export default function CameraView() {
       }
     };
 
-    if (inputSource === "camera") {
-      navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          videoRef.current.play();
-          streamRef.current = stream;
-        }
+    if (inputSource === 'camera') {
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((stream) => {
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+            videoRef.current.play();
+            streamRef.current = stream;
+          }
 
-        intervalRef.current = setInterval(() => {
-          if (!canvasRef.current || !videoRef.current) return;
-          const ctx = canvasRef.current.getContext("2d");
-          if (!ctx) return;
+          intervalRef.current = setInterval(() => {
+            if (!canvasRef.current || !videoRef.current) return;
+            const ctx = canvasRef.current.getContext('2d');
+            if (!ctx) return;
 
-          canvasRef.current.width = videoRef.current.videoWidth;
-          canvasRef.current.height = videoRef.current.videoHeight;
-          ctx.drawImage(videoRef.current, 0, 0);
+            canvasRef.current.width = videoRef.current.videoWidth;
+            canvasRef.current.height = videoRef.current.videoHeight;
+            ctx.drawImage(videoRef.current, 0, 0);
 
-          canvasRef.current.toBlob((blob) => {
-            if (blob && ws.readyState === WebSocket.OPEN) {
-              // console.log("Sending frame to backend..."); // LOG 2 (to server)
-              ws.send(blob);
-            }
-          }, "image/jpeg");
-        }, 250);
-      });
-    } else if (inputSource === "file" && videoFile) {
+            canvasRef.current.toBlob((blob) => {
+              if (blob && ws.readyState === WebSocket.OPEN) {
+                ws.send(blob);
+              }
+            }, 'image/jpeg');
+          }, 250);
+        })
+        .catch((err) => {
+          console.error('Camera access failed or aborted by user:', err);
+        });
+    } else if (inputSource === 'file' && videoFile) {
       if (videoRef.current) {
         videoRef.current.srcObject = null;
         videoRef.current.src = videoFile;
@@ -93,7 +97,7 @@ export default function CameraView() {
 
         intervalRef.current = setInterval(() => {
           if (!canvasRef.current || !videoRef.current) return;
-          const ctx = canvasRef.current.getContext("2d");
+          const ctx = canvasRef.current.getContext('2d');
           if (!ctx) return;
 
           canvasRef.current.width = videoRef.current.videoWidth;
@@ -104,11 +108,11 @@ export default function CameraView() {
             if (blob && wsRef.current?.readyState === WebSocket.OPEN) {
               wsRef.current.send(blob);
             }
-          }, "image/jpeg");
+          }, 'image/jpeg');
         }, 250); // 4 fps
       }
     }
-  
+
     return () => {
       // 🔁 CLEANUP on mode switch
       if (wsRef.current) {
@@ -188,49 +192,54 @@ export default function CameraView() {
   return (
     <div className="min-h-screen bg-white select-none caret-transparent">
       {/* Header */}
-      <header className="flex justify-between items-center px-8 py-5">
-        <Link
-          href="/"
-          className="flex items-center gap-2 transition-transforms duration-200 hover:scale-105"
-        >
-          <div className="bg-white rounded-full p-1">
-            <Image
-              src="/logo.svg"
-              alt="Lifeguard Vision"
-              className="object-contain"
-              width={40}
-              height={40}
-            ></Image>
+      <div className="w-full bg-white reative z-10">
+        <nav className="container mx-auto flex items-center justify-between px-8 py-5">
+          <div className="flex items-center gap-2">
+            <Link
+              href="/"
+              className="flex items-center gap-2 transition-transform duration-200 hover:scale-105"
+            >
+              <div className="bg-white rounded-full p-2">
+                <Image
+                  src="/logo.svg"
+                  alt="Lifeguard Vision"
+                  className="object-contain"
+                  width={40}
+                  height={40}
+                />
+              </div>
+              <h1 className="text-xl font-serif italic font-bold text-gray-800">
+                Lifeguard Vision
+              </h1>
+            </Link>
           </div>
-          <h1 className="text-xl font-serif text-gray-800 italic font-bold">
-            Lifeguard Vision
-          </h1>
-        </Link>
-        <button
-          className="group flex items-center gap-2 text-gray-800 transition-transform duration-200 hover:scale-105"
-          onClick={() => setOpenSettings(!openSettings)}
-        >
-          <span className="text-xl">Settings</span>
-          <Settings
-            className={`w-8 h-8 transition-transform duration-300 group-hover:rotate-120`}
-            style={{
-              transform: openSettings ? "rotate(120deg)" : "rotate(0deg)",
-            }}
-          />
-        </button>
-      </header>
-
+          <button
+            className="border-1 border-black bg-red-200 hover:bg-red-400 group flex items-center gap-2 text-gray-800 px-4 py-2 rounded-md font-medium transition-transform duration-200 hover:scale-105"
+            onClick={() => setOpenSettings(!openSettings)}
+          >
+            <span className="text-medium">Settings</span>
+            <Settings
+              className={`w-6 h-6 transition-transform duration-300 group-hover:rotate-120`}
+              style={{
+                transform: openSettings ? 'rotate(120deg)' : 'rotate(0deg)',
+              }}
+            />
+          </button>
+        </nav>
+      </div>
       {uploadVideo ? (
         <div>
           <VideoUpload />
-          <canvas ref={canvasRef} style={{ display: "none" }} />
-          { showAlertBanner ? 
-          <div
+          <canvas
+            ref={canvasRef}
+            style={{ display: 'none' }}
+          />
+          {showAlertBanner ? <div
             className="m-5 w-30 mx-auto z-10 px-4 py-2 rounded-lg bg-opacity-75"
             style={{
               backgroundColor: alert
-                ? "rgba(239, 68, 68, 0.9)"
-                : "rgba(34, 197, 94, 0.9)",
+                ? 'rgba(239, 68, 68, 0.9)'
+                : 'rgba(34, 197, 94, 0.9)',
             }}
           >
             {alert ? (
@@ -240,13 +249,13 @@ export default function CameraView() {
             )}
           </div>
           :
-          <div></div>
+          <div />
           }
         </div>
       ) : (
         <main
           className={`flex px-15 md:px-30 lg:px-50 gap-4 flex-1 p-4 transition-all duration-300 ease-in-out ${
-            openSettings ? "translate-x-[-6vw]" : ""
+            openSettings ? 'translate-x-[-6vw]' : ''
           }`}
         >
           <div className="flex-1">
@@ -257,12 +266,12 @@ export default function CameraView() {
               <div className="flex items-center gap-2">
                 <span className="text-sm sm:text-lg md:text-xl text-gray-800">
                   {isOperational
-                    ? "Vision Status: Operational"
-                    : "Vision Status: Offline"}
+                    ? 'Vision Status: Operational'
+                    : 'Vision Status: Offline'}
                 </span>
                 <div
                   className={`w-4 h-4 rounded-full  ${
-                    isOperational ? "bg-green-500 animate-pulse" : "bg-red-500"
+                    isOperational ? 'bg-green-500 animate-pulse' : 'bg-red-500'
                   }`}
                 ></div>
               </div>
@@ -271,7 +280,7 @@ export default function CameraView() {
             {/* Camera view */}
             <div
               className={`relative bg-gray-200 aspect-video w-full rounded-md overflow-hidden" ${
-                !isOperational ? "animate-pulse" : ""
+                !isOperational ? 'animate-pulse' : ''
               }`}
             >
               <video
@@ -286,13 +295,16 @@ export default function CameraView() {
                   getDeviceName().then((name) => setDeviceName(name));
                 }}
               />
-              <canvas ref={canvasRef} style={{ display: "none" }} />
+              <canvas
+                ref={canvasRef}
+                style={{ display: 'none' }}
+              />
               <div
                 className="absolute bottom-5 left-4 z-10 px-4 py-2 rounded-lg bg-opacity-75"
                 style={{
                   backgroundColor: alert
-                    ? "rgba(239, 68, 68, 0.9)"
-                    : "rgba(34, 197, 94, 0.9)",
+                    ? 'rgba(239, 68, 68, 0.9)'
+                    : 'rgba(34, 197, 94, 0.9)',
                 }}
               >
                 {alert ? (
@@ -313,7 +325,7 @@ export default function CameraView() {
               )}
               {!isOperational && (
                 <div className="absolute inset-0 flex items-center justify-center bg-gray-200 bg-opacity-80">
-                  <p className="text-xl text-gray-800">Camera not available</p>{" "}
+                  <p className="text-xl text-gray-800">Camera not available</p>{' '}
                   {/* perhaps replace with "cannot connect to server" or smthin */}
                 </div>
               )}
@@ -321,7 +333,7 @@ export default function CameraView() {
             <div className="flex justify-end py-3">
               <button
                 className="bg-red-400 hover:bg-red-500 text-gray-800 font-bold py-3 px-12 rounded-md text-xl transition-colors"
-                onClick={() => window.alert("Emergency call initiated")}
+                onClick={() => window.alert('Emergency call initiated')}
               >
                 Call 911
               </button>
@@ -332,7 +344,7 @@ export default function CameraView() {
 
       {/* Settings panel */}
       {openSettings && (
-        <div className="fixed right-8 top-17 w-60 bg-white border-1 border-gray-500 rounded-md p-6 overflow-y-auto">
+        <div className="fixed right-8 top-21 w-60 bg-white border-1 border-gray-500 rounded-md p-6 overflow-y-auto">
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
