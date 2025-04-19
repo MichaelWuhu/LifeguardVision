@@ -4,6 +4,7 @@ import numpy as np
 from utils.pose import detect_pose_landmarks
 from utils.headLevel import update_and_check_head_level
 from utils.motion import update_and_check_stillness
+from utils.ws_manager import manager
 import base64
 
 router = APIRouter()
@@ -11,7 +12,7 @@ timer = 0
 
 @router.websocket("/ws/stream")
 async def stream_endpoint(websocket: WebSocket):
-    await websocket.accept()
+    await manager.connect(websocket)
     print("WebSocket connection accepted")
 
     try:
@@ -55,4 +56,5 @@ async def stream_endpoint(websocket: WebSocket):
 
     except Exception as e:
         print("WebSocket error:", e)
-        await websocket.close()
+        manager.disconnect(websocket)
+
