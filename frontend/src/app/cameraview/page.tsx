@@ -53,7 +53,7 @@ export default function CameraView() {
       <header className="flex justify-between items-center p-7">
         <Link
           href="/"
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 transition-transforms duration-200 hover:scale-105"
         >
           <div className="bg-white rounded-full p-1">
             <Image
@@ -68,9 +68,9 @@ export default function CameraView() {
             Lifeguard Vision
           </h1>
         </Link>
-        <button className="flex items-center gap-2 text-gray-700">
+        <button className="group flex items-center gap-2 text-gray-700 transition-transform duration-200 hover:scale-105">
           <span className="text-xl">Settings</span>
-          <Settings className="w-8 h-8" />
+          <Settings className="w-8 h-8 transition-transform duration-300 group-hover:rotate-120" />
         </button>
       </header>
 
