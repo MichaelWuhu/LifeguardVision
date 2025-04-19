@@ -73,7 +73,7 @@ export default function Home() {
       </div>
     </div>
     
-    <div className="container mx-auto flex-1 px-4 py-12 mt-30">
+    <div id="who-we-help" className="container mx-auto flex-1 px-4 py-12 mt-30">
       <div className="max-w-4xl mx-auto">
         <h3 className="text-3xl md:text-4xl font-bold text-white mb-8 text-center">Who We Help</h3>
       </div>
@@ -92,7 +92,7 @@ export default function Home() {
       </p>
     </div>
 
-    <div className="container mx-auto flex-1 px-4 py-12 mt-30">
+    <div id="how-it-works" className="container mx-auto flex-1 px-4 py-12 mt-30">
       <div className="max-w-4xl mx-auto">
         <h4 className="text-3xl md:text-4xl font-bold text-white mb-8 text-center">How it Works</h4>
       </div>
@@ -123,7 +123,7 @@ export default function Home() {
       </div>
     </div>
 
-    <div className="max-w-4xl mx-auto mt-50">
+    <div id="about-us" className="max-w-4xl mx-auto mt-50">
       <h6 className="text-3xl md:text-4xl font-bold text-white mb-8 text-center">About Us</h6>
     </div>
 
