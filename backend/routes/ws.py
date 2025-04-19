@@ -2,6 +2,7 @@ from fastapi import APIRouter, WebSocket
 import cv2
 import numpy as np
 from utils.pose import detect_pose_landmarks
+from utils.distressDetection import detector
 import base64
 from utils.motion import update_and_check_stillness
 
