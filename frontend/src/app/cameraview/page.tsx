@@ -42,15 +42,13 @@ export default function CameraView() {
         <div className="flex items-center gap-3">
           <div className="relative w-10 h-10">
             <Image
-              src="/placeholder.svg?height=40&width=40"
+              src="/logo.svg"
               alt="Lifeguard Vision Logo"
               fill
               className="object-contain"
             />
           </div>
-          <h1 className="text-2xl font-medium text-gray-700">
-            Lifeguard Vision
-          </h1>
+          <h1 className="font-bold text-2xl text-gray-700">Lifeguard Vision</h1>
         </div>
         <button className="flex items-center gap-2 text-gray-700">
           <span className="text-xl">Settings</span>
@@ -58,7 +56,7 @@ export default function CameraView() {
         </button>
       </header>
 
-      <main className="flex p-4 gap-4">
+      <main className="flex py-5 px-15 md:px-30 lg:px-50 gap-4">
         <div className="flex-1">
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-xl text-gray-700">Webcam 1080p HD</h2>
@@ -67,8 +65,8 @@ export default function CameraView() {
                 Vision Status: Operational
               </span>
               <div
-                className={`w-4 h-4 rounded-full ${
-                  isOperational ? 'bg-green-500' : 'bg-red-500'
+                className={`w-4 h-4 rounded-full  ${
+                  isOperational ? 'bg-green-500 animate-pulse' : 'bg-red-500'
                 }`}
               ></div>
             </div>
@@ -90,7 +88,7 @@ export default function CameraView() {
           </div>
         </div>
 
-        {/* Sidebar */}
+        {/* Sidebar
         <div className="w-64 bg-gray-300 rounded-md p-4">
           <div className="space-y-6">
             <div className="flex items-center justify-between">
@@ -113,7 +111,7 @@ export default function CameraView() {
               className="data-[state=checked]:bg-black"
             />
           </div>
-        </div>
+        </div> */}
       </main>
 
       <div className="flex justify-end p-4">
