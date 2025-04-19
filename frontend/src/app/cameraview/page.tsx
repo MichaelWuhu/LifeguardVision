@@ -5,14 +5,24 @@ import Image from 'next/image';
 import { Info, Settings } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 
+function getDeviceName(): Promise<string> {
+  return navigator.mediaDevices.enumerateDevices().then((devices) => {
+    const videoDevice = devices.find((device) => device.kind === 'videoinput');
+    return videoDevice?.label || '';
+  });
+}
+
 export default function CameraView() {
-  const [isOperational, setIsOperational] = useState(true);
-  const [autoDialEnabled1, setAutoDialEnabled1] = useState(true);
-  const [autoDialEnabled2, setAutoDialEnabled2] = useState(false);
+  const [isOperational, setIsOperational] = useState(false);
+  const [autoDialEnabled, setAutoDialEnabled] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [deviceName, setDeviceName] = useState<string>('Attempting to access camera...');
 
   useEffect(() => {
-    // Request camera access when component mounts
+    getDeviceName().then((name) => setDeviceName(name));
+  }, []);
+
+  useEffect(() => {
     if (typeof navigator !== 'undefined') {
       navigator.mediaDevices
         .getUserMedia({ video: { width: 1920, height: 1080 } })
@@ -27,7 +37,6 @@ export default function CameraView() {
         });
     }
 
-    // Clean up function to stop camera when component unmounts
     return () => {
       if (videoRef.current && videoRef.current.srcObject) {
         const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
@@ -59,7 +68,7 @@ export default function CameraView() {
       <main className="flex py-5 px-15 md:px-30 lg:px-50 gap-4">
         <div className="flex-1">
           <div className="flex justify-between items-center mb-2">
-            <h2 className="text-xl text-gray-700">Webcam 1080p HD</h2>
+            <h2 className="text-xl text-gray-700">{deviceName}</h2>
             <div className="flex items-center gap-2">
               <span className="text-xl text-gray-700">
                 Vision Status: Operational
@@ -73,18 +82,34 @@ export default function CameraView() {
           </div>
 
           {/* Camera view */}
-          <div className="relative bg-gray-200 aspect-video w-full rounded-md overflow-hidden">
+          <div
+            className={`relative bg-gray-200 aspect-video w-full rounded-md overflow-hidden" ${
+              !isOperational ? 'animate-pulse' : ''
+            }`}
+          >
             <video
               ref={videoRef}
               autoPlay
               playsInline
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover rounded-md"
+              onLoadedData={() => {
+                setIsOperational(true);
+                getDeviceName().then((name) => setDeviceName(name));
+              }}
             />
             {!isOperational && (
               <div className="absolute inset-0 flex items-center justify-center bg-gray-200 bg-opacity-80">
                 <p className="text-xl text-gray-700">Camera not available</p>
               </div>
             )}
+          </div>
+          <div className="flex justify-end py-3">
+            <button
+              className="bg-red-400 hover:bg-red-500 text-gray-800 font-bold py-3 px-12 rounded-md text-xl transition-colors"
+              onClick={() => alert('Emergency call initiated')}
+            >
+              Call 911
+            </button>
           </div>
         </div>
 
@@ -113,15 +138,6 @@ export default function CameraView() {
           </div>
         </div> */}
       </main>
-
-      <div className="flex justify-end p-4">
-        <button
-          className="bg-red-400 hover:bg-red-500 text-gray-800 font-bold py-3 px-12 rounded-md text-xl transition-colors"
-          onClick={() => alert('Emergency call initiated')}
-        >
-          Call 911
-        </button>
-      </div>
     </div>
   );
 }
