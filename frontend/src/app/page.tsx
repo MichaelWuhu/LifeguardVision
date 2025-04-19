@@ -10,8 +10,6 @@ export default function Home() {
       {/* Navigation bar */}
       <header className="fixed top-0 left-0 right-0 w-full bg-white/80 z-50">
         <div className="w-full bg-white relative z-10">
-      <header className="fixed top-0 left-0 right-0 w-full bg-white/80 z-50">
-        <div className="w-full bg-white relative z-10">
           <nav className="container mx-auto flex items-center justify-between">
 
             <div className="flex items-center gap-2">
@@ -53,6 +51,7 @@ export default function Home() {
             </div>
           </div>
         </header>
+      
 
     {/* Content area */}
     <div className="container mx-auto flex-1 px-4 py-12 mt-30">
@@ -155,7 +154,6 @@ export default function Home() {
         <p>Timothy Huang — <a href="mailto:huangtimothy@yahoo.com" className="underline hover:text-white">huangtimothy@yahoo.com</a></p>
       </div>
     </div>
-
     </main>
   )
 }
