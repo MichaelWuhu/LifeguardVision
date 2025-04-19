@@ -87,7 +87,24 @@ export default function CameraView() {
       if (videoRef.current) {
         videoRef.current.srcObject = null;
         videoRef.current.src = videoFile;
+        videoRef.current.play();
         setIsOperational(true);
+    
+        intervalRef.current = setInterval(() => {
+          if (!canvasRef.current || !videoRef.current) return;
+          const ctx = canvasRef.current.getContext('2d');
+          if (!ctx) return;
+    
+          canvasRef.current.width = videoRef.current.videoWidth;
+          canvasRef.current.height = videoRef.current.videoHeight;
+          ctx.drawImage(videoRef.current, 0, 0);
+    
+          canvasRef.current.toBlob((blob) => {
+            if (blob && wsRef.current?.readyState === WebSocket.OPEN) {
+              wsRef.current.send(blob);
+            }
+          }, 'image/jpeg');
+        }, 250); // 4 fps
       }
     }
   
@@ -111,6 +128,21 @@ export default function CameraView() {
       setIsOperational(false);
     };
   }, [inputSource, videoFile]);
+  
+  useEffect(() => {
+    const handleVideoReady = (e: CustomEvent) => {
+      const url = e.detail;
+      console.log("📹 Video is ready to play:", url);
+      setVideoFile(url);
+      setInputSource("file");
+    };
+  
+    window.addEventListener("video-ready", handleVideoReady as EventListener);
+  
+    return () => {
+      window.removeEventListener("video-ready", handleVideoReady as EventListener);
+    };
+  }, []);
   
 
   useEffect(() => {

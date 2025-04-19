@@ -68,7 +68,7 @@ async def upload_file(file: UploadFile = File(...)):
     file_ext = os.path.splitext(file.filename)[1]
     print(f"File Type: {file_ext}")
 
-    filename = f"video"
+    filename = f"video{file_ext}"
     file_path = os.path.join(UPLOAD_DIR, filename)
 
     with open(file_path, "wb") as buffer:
