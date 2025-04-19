@@ -11,6 +11,8 @@ import {
   TooltipContent,
 } from '@/components/ui/tooltip';
 import VideoUpload from '@/components/video-upload';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 async function getDeviceName(): Promise<string> {
   const devices = await navigator.mediaDevices.enumerateDevices();
@@ -45,10 +47,11 @@ export default function CameraView() {
     if (wsRef.current) {
       wsRef.current.close();
     }
-
+    
+    // const ENDPOINT = process.env.NEXT_PUBLIC_RENDER || 'ws://localhost:8000/ws/stream';
+    // const ws = new WebSocket(ENDPOINT);
     const ws = new WebSocket('ws://localhost:8000/ws/stream');
     wsRef.current = ws;
-
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       const { frame, ...rest } = data;
