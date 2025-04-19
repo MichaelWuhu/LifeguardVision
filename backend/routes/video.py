@@ -6,6 +6,7 @@ import cv2
 from fastapi import APIRouter, HTTPException, UploadFile, File
 from fastapi.responses import JSONResponse
 from utils.pose import detect_pose_landmarks
+from utils.distressDetection import detector
 
 router = APIRouter()
 UPLOAD_DIR = "uploads"
