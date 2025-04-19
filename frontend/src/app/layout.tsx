@@ -9,7 +9,6 @@ export const metadata: Metadata = {
   title: "Lifeguard Vision",
   description: "Advanced lifeguard monitoring system",
 }
-
 export default function RootLayout({
   children,
 }: Readonly<{
