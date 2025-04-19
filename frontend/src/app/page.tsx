@@ -43,8 +43,18 @@ export default function Home() {
       </div>
     </div>
 
-      {/* Content area */}
-      <div className="container mx-auto flex-1 px-4 py-12">{/* Add your content here */}</div>
+    {/* Content area */}
+        <div className="container mx-auto flex-1 px-4 py-12">
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white drop-shadow-lg mb-6 tracking-tight">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-white">
+              Welcome to Lifeguard Vision
+            </span>
+          </h2>
+        <div className="relative h-1 bg-white/50 rounded-full mx-auto mb-10 overflow-hidden">
+          <div className="absolute inset-0 bg-white"></div>
+          </div>
+        </div>
+      
     </main>
   )
 }
