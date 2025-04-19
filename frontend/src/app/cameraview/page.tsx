@@ -10,6 +10,7 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from '@/components/ui/tooltip';
+import WebcamStream from "@/components/webcam-stream";
 
 async function getDeviceName(): Promise<string> {
   const devices = await navigator.mediaDevices.enumerateDevices();
@@ -26,6 +27,7 @@ export default function CameraView() {
   );
   const [autoDial, setAutoDial] = useState(false);
   const [toggleLines, setToggleLines] = useState(false);
+  const [uploadVideo, setUploadVideo] = useState(false);
 
   useEffect(() => {
     getDeviceName().then((name) => setDeviceName(name));
@@ -133,7 +135,7 @@ export default function CameraView() {
             />
             {!isOperational && (
               <div className="absolute inset-0 flex items-center justify-center bg-gray-200 bg-opacity-80">
-                <p className="text-xl text-gray-800">Camera not available</p>
+                <p className="text-xl text-gray-800">Camera not available</p> {/* perhaps replace with "cannot connect to server" or smthin */}
               </div>
             )}
           </div>
@@ -204,6 +206,34 @@ export default function CameraView() {
                   className="sr-only peer"
                   checked={toggleLines}
                   onChange={(e) => setToggleLines(e.target.checked)}
+                />
+                <div className="w-11 h-6 bg-gray-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-400"></div>
+              </label>
+            </div>
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info
+                        className={`w-4 h-4 transition-transform duration-300`}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="bg-white border-1 rounded-md p-2">
+                        Upload video footage to identify.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <span>Upload Video</span>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={uploadVideo}
+                  onChange={(e) => setUploadVideo(e.target.checked)}
                 />
                 <div className="w-11 h-6 bg-gray-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-400"></div>
               </label>
