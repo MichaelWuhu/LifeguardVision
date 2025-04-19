@@ -325,19 +325,20 @@ export default function CameraView() {
             </div>
             <div className="flex justify-end pt-3">
               <button
-                className={`${
+                className={`
+                  ${
                   !isOperational
                     ? 'select-none opacity-50 bg-gray-200 cursor-not-allowed'
                     : 'bg-red-400 hover:bg-red-500'
                 } text-gray-800 font-bold py-3 px-12 rounded-md text-xl transition-colors`}
                 onClick={() => {
                   if (isOperational) {
-                    window.alert('Emergency call initiated');
+                    window.alert('Emergency call initiated.');
                   }
                 }}
                 disabled={!isOperational}
               >
-                Call 911
+                {autoDial && alert ? 'Drowning deteched, dialing 911... Cancel?' : 'Call 911'}
               </button>
             </div>
           </div>
