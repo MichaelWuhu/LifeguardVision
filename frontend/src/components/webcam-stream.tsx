@@ -61,17 +61,19 @@ export default function WebcamStream() {
     <div>
       <video
         ref={videoRef}
-        className="rounded shadow"
+        autoPlay
+        playsInline
+        className="w-full h-full object-cover rounded-md"
       />
       <canvas
         ref={canvasRef}
         style={{ display: 'none' }}
       />
-      <div className="mt-4">
+      <div className="absolute bottom-5 left-4 z-10 px-4 py-2 rounded-lg bg-opacity-75" style={{ backgroundColor: alert ? 'rgba(239, 68, 68, 0.9)' : 'rgba(34, 197, 94, 0.9)' }}>
         {alert ? (
-          <p className="text-red-600 font-bold text-lg">ALERT DETECTED</p>
+          <p className="text-white font-bold text-lg">⚠️ ALERT DETECTED</p>
         ) : (
-          <p className="text-green-600 font-medium">All clear</p>
+          <p className="text-white font-medium">✓ All clear</p>
         )}
       </div>
       {frameBase64 && showLines && (
@@ -82,12 +84,6 @@ export default function WebcamStream() {
           className="mt-4 rounded shadow max-w-full"
         />
       )}
-      <button
-        className="bg-gray-300"
-        onClick={toggleShowLines}
-      >
-        Toggle Lines
-      </button>
     </div>
   );
 }
