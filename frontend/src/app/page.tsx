@@ -86,7 +86,7 @@ export default function Home() {
       being especially vulnerable—drowning is the top cause of accidental death for children aged 1 to 4. In the U.S. alone, an 
       average of 10 people drown daily, and thousands more suffer severe, often life-altering injuries. Most incidents occur in 
       residential pools, often within minutes and without warning, even with supervision present. With many victims going unnoticed 
-      until it’s too late, there's a clear need for AI-powered systems that can detect drowning in real time and automatically alert 
+      until it's too late, there's a clear need for AI-powered systems that can detect drowning in real time and automatically alert 
       EMS—ensuring a faster, life-saving response when every second counts.
       </p>
     </div>
