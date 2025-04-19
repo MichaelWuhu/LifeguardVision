@@ -92,17 +92,4 @@ body {
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
-
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  h1 {
-    @apply text-2xl font-bold;
-  }
-  h2 {
-    @apply text-xl font-semibold;
-  }
 }
