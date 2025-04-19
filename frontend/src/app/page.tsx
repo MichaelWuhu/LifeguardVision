@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { WavyWater } from "@/components/wavy-water"
+import Image from "next/image"
 
 export default function Home() {
   return (
@@ -12,23 +13,23 @@ export default function Home() {
         <nav className="container mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="bg-white rounded-full p-1">
-              <div className="text-red-500 text-2xl font-bold">+</div>
+                <Image src="/logo.svg" alt="Lifeguard Vision" className="object-contain" width={40} height={40}></Image>
             </div>
             <h1 className="text-xl font-serif italic font-bold">Lifeguard Vision</h1>
           </div>
 
           <div className="hidden md:flex items-center gap-6">
-            <Link href="#how-it-works" className="text-gray-800 hover:text-gray-600 font-medium">
+            <Link href="#how-it-works" className="text-gray-800 hover:underline font-medium">
               How It Works
             </Link>
-            <Link href="#about-us" className="text-gray-800 hover:text-gray-600 font-medium">
+            <Link href="#about-us" className="text-gray-800 hover:underline font-medium">
               About Us
             </Link>
           </div>
 
           <Link
-            href="#try-now"
-            className="bg-white/90 hover:bg-white text-gray-800 px-4 py-2 rounded-md font-medium transition-colors"
+            href="/cameraview"
+            className="border-1 border-black bg-white hover:bg-gray-200 text-black px-4 py-2 rounded-md font-medium transition-colors"
           >
             Try it now →
           </Link>
