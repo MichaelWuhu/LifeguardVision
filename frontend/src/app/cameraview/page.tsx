@@ -47,7 +47,7 @@ export default function CameraView() {
     if (wsRef.current) {
       wsRef.current.close();
     }
-    
+
     // const ENDPOINT = process.env.NEXT_PUBLIC_RENDER || 'ws://localhost:8000/ws/stream';
     // const ws = new WebSocket(ENDPOINT);
     const ws = new WebSocket('ws://localhost:8000/ws/stream');
@@ -107,7 +107,6 @@ export default function CameraView() {
         });
     }
     return () => {
-      // 🔁 CLEANUP on mode switch
       if (wsRef.current) {
         wsRef.current.close();
         wsRef.current = null;
@@ -206,7 +205,7 @@ export default function CameraView() {
             </Link>
           </div>
           <button
-            className='border-1 border-black bg-red-200 hover:bg-red-400 group flex items-center gap-2 text-gray-800 px-4 py-2 rounded-md font-medium transition-transform duration-200 hover:scale-105'
+            className="border-1 border-black bg-red-200 hover:bg-red-400 group flex items-center gap-2 text-gray-800 px-4 py-2 rounded-md font-medium transition-transform duration-200 hover:scale-105"
             onClick={() => setOpenSettings(!openSettings)}
           >
             <span className="text-medium">Settings</span>
@@ -321,14 +320,22 @@ export default function CameraView() {
               {!isOperational && (
                 <div className="absolute inset-0 flex items-center justify-center bg-gray-200 bg-opacity-80">
                   <p className="text-xl text-gray-800">Camera not available</p>{' '}
-                  {/* perhaps replace with "cannot connect to server" or smthin */}
                 </div>
               )}
             </div>
             <div className="flex justify-end pt-3">
               <button
-                className="bg-red-400 hover:bg-red-500 text-gray-800 font-bold py-3 px-12 rounded-md text-xl transition-colors"
-                onClick={() => window.alert('Emergency call initiated')}
+                className={`${
+                  !isOperational
+                    ? 'select-none opacity-50 bg-gray-200 cursor-not-allowed'
+                    : 'bg-red-400 hover:bg-red-500'
+                } text-gray-800 font-bold py-3 px-12 rounded-md text-xl transition-colors`}
+                onClick={() => {
+                  if (isOperational) {
+                    window.alert('Emergency call initiated');
+                  }
+                }}
+                disabled={!isOperational}
               >
                 Call 911
               </button>
@@ -339,14 +346,18 @@ export default function CameraView() {
 
       {/* Settings panel */}
       {openSettings && (
-        <div className="fixed right-8 top-21 w-60 bg-white border-1 border-gray-500 rounded-md p-6 overflow-y-auto">
+        <div className="fixed right-8 top-21 w-60 opacity-70 bg-white border-1 border-gray-500 rounded-md p-6 overflow-y-auto">
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Info className="w-4 h-4 transition-transform duration-300" />
+                      <Info
+                        className={`${
+                          uploadVideo ? 'text-gray-400' : 'text-black'
+                        } w-4 h-4 transition-transform duration-300`}
+                      />
                     </TooltipTrigger>
                     <TooltipContent>
                       <p className="bg-white border-1 rounded-md p-2">
@@ -367,7 +378,13 @@ export default function CameraView() {
                   disabled={uploadVideo}
                   onChange={(e) => setAutoDial(e.target.checked)}
                 />
-                <div className="w-11 h-6 bg-gray-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-400"></div>
+                <div
+                  className={`w-11 h-6 ${
+                    uploadVideo ? 'bg-gray-300' : 'bg-gray-500'
+                  } peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all ${
+                    uploadVideo ? '' : 'peer-checked:bg-red-400'
+                  }`}
+                ></div>
               </label>
             </div>
             <div className="flex justify-between items-center">
