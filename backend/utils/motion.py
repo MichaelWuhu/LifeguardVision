@@ -44,7 +44,7 @@ def update_and_check_stillness(current_landmarks, threshold_x=0.02, threshold_y=
     avg_dx = total_dx / count if count > 0 else 0
     avg_dy = total_dy / count if count > 0 else 0
 
-    print(f"🧭 Avg dx: {avg_dx:.4f}, dy: {avg_dy:.4f}")
+    # print(f"🧭 Avg dx: {avg_dx:.4f}, dy: {avg_dy:.4f}")
 
     is_still_now = avg_dx < threshold_x and avg_dy < threshold_y
 
@@ -65,7 +65,7 @@ def update_and_check_stillness(current_landmarks, threshold_x=0.02, threshold_y=
     # Update last_pose for next frame comparison
     last_pose = current_landmarks
 
-    print(f"🔁 STATE: {'STILL' if is_still_now else 'ACTIVE'} | ALERT: {is_alert_active} "
-          f"| still_count={still_count}, active_count={active_count}")
+    # print(f"🔁 STATE: {'STILL' if is_still_now else 'ACTIVE'} | ALERT: {is_alert_active} "
+    #       f"| still_count={still_count}, active_count={active_count}")
 
     return is_alert_active

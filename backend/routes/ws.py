@@ -2,11 +2,12 @@ from fastapi import APIRouter, WebSocket
 import cv2
 import numpy as np
 from utils.pose import detect_pose_landmarks
-from utils.distressDetection import detector
+from utils.headLevel import update_and_check_head_level
 from utils.motion import update_and_check_stillness
 import base64
 
 router = APIRouter()
+timer = 0
 
 @router.websocket("/ws/stream")
 async def stream_endpoint(websocket: WebSocket):
@@ -31,9 +32,19 @@ async def stream_endpoint(websocket: WebSocket):
                 continue
             
             is_still = update_and_check_stillness(pose_data)
-            is_drowning = is_still
-            # print("Alert status:", is_drowning)
-            # print("NOSE", pose_data["NOSE"])
+            head_below_water = update_and_check_head_level(pose_data)
+
+            print("is_still:", is_still)
+            print("head_below_water:", head_below_water)
+
+            if is_still and head_below_water:
+                timer += 1
+                print("Timer:", timer)
+                if timer >= 20: # 5 seconds (change later to 240)
+                    is_drowning = True
+            else:
+                timer = 0
+                is_drowning = False
 
             await websocket.send_json({
                 "alert": is_drowning,
