@@ -35,45 +35,53 @@ export default function CameraView() {
   const [inputSource, setInputSource] = useState<'camera' | 'file'>('camera');
   const [videoFile, setVideoFile] = useState<string | null>(null);
 
-  useEffect(() => {
-    const ws = new WebSocket('ws://localhost:8000/ws/stream');
+  const wsRef = useRef<WebSocket | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
+
+  useEffect(() => {
+    if (wsRef.current) {
+      wsRef.current.close();
+    }
+  
+    const ws = new WebSocket('ws://localhost:8000/ws/stream');
+    wsRef.current = ws;
+  
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       const { frame, ...rest } = data;
       console.log('Server response:', rest); // LOG 1 (from server)
       setAlert(data.alert);
       if (frame) {
-        setFrameBase64(`data:image/jpeg;base64,${data.frame}`);
+        setFrameBase64(`data:image/jpeg;base64,${frame}`);
       }
     };
-
+  
     if (inputSource === 'camera') {
       navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
           videoRef.current.play();
+          streamRef.current = stream;
         }
-
-        const interval = setInterval(() => {
+  
+        intervalRef.current = setInterval(() => {
           if (!canvasRef.current || !videoRef.current) return;
-
           const ctx = canvasRef.current.getContext('2d');
           if (!ctx) return;
-
+  
           canvasRef.current.width = videoRef.current.videoWidth;
           canvasRef.current.height = videoRef.current.videoHeight;
-
           ctx.drawImage(videoRef.current, 0, 0);
+  
           canvasRef.current.toBlob((blob) => {
             if (blob && ws.readyState === WebSocket.OPEN) {
               // console.log("Sending frame to backend..."); // LOG 2 (to server)
               ws.send(blob);
             }
           }, 'image/jpeg');
-        }, 250); // Send a frame every 250ms
-
-        return () => clearInterval(interval);
+        }, 250);
       });
     } else if (inputSource === 'file' && videoFile) {
       if (videoRef.current) {
@@ -82,14 +90,37 @@ export default function CameraView() {
         setIsOperational(true);
       }
     }
+  
     return () => {
-      ws.close();
+      // 🔁 CLEANUP on mode switch
+      if (wsRef.current) {
+        wsRef.current.close();
+        wsRef.current = null;
+      }
+  
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+  
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
+      }
+  
+      setIsOperational(false);
     };
-  }, []);
+  }, [inputSource, videoFile]);
+  
 
   useEffect(() => {
     getDeviceName().then((name) => setDeviceName(name));
   }, []);
+
+  useEffect(() => {
+    setInputSource(uploadVideo ? 'file' : 'camera');
+  }, [uploadVideo]);
+  
 
   return (
     <div className="min-h-screen bg-white select-none caret-transparent">
@@ -287,7 +318,10 @@ export default function CameraView() {
                   type="checkbox"
                   className="sr-only peer"
                   checked={uploadVideo}
-                  onChange={(e) => setUploadVideo(e.target.checked)}
+                  onChange={(e) => {
+                    setUploadVideo(e.target.checked);
+                    setInputSource(e.target.checked ? 'file' : 'camera');
+                  }}
                 />
                 <div className="w-11 h-6 bg-gray-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-400"></div>
               </label>
