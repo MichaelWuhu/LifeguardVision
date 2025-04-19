@@ -15,6 +15,7 @@ async function getDeviceName(): Promise<string> {
 export default function CameraView() {
   const [isOperational, setIsOperational] = useState(false);
   // const [autoDialEnabled, setAutoDialEnabled] = useState(true);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [deviceName, setDeviceName] = useState<string>(
     'Attempting to access camera...'
@@ -50,7 +51,7 @@ export default function CameraView() {
   return (
     <div className="min-h-screen bg-white select-none caret-transparent">
       {/* Header */}
-      <header className="flex justify-between items-center p-7">
+      <header className="flex justify-between items-center px-8 py-5">
         <Link
           href="/"
           className="flex items-center gap-2 transition-transforms duration-200 hover:scale-105"
@@ -68,13 +69,18 @@ export default function CameraView() {
             Lifeguard Vision
           </h1>
         </Link>
-        <button className="group flex items-center gap-2 text-gray-700 transition-transform duration-200 hover:scale-105">
+        <button
+          className="group flex items-center gap-2 text-gray-700 transition-transform duration-200 hover:scale-105"
+          onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+        >
           <span className="text-xl">Settings</span>
           <Settings className="w-8 h-8 transition-transform duration-300 group-hover:rotate-120" />
         </button>
       </header>
 
-      <main className="flex px-15 md:px-30 lg:px-50 gap-4">
+      <main className={`flex px-15 md:px-30 lg:px-50 gap-4 flex-1 p-4 transition-all duration-300 ease-in-out ${
+          isSettingsOpen ? 'translate-x-[-10vw]' : ''
+        }`}>
         <div className="flex-1">
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-sm sm:text-lg md:text-xl text-gray-700">
@@ -127,32 +133,54 @@ export default function CameraView() {
             </button>
           </div>
         </div>
-
-        {/* Sidebar
-        <div className="w-64 bg-gray-300 rounded-md p-4">
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-medium">Auto Dial 911</div>
-              <Info className="w-6 h-6 text-gray-700" />
-            </div>
-            <Switch
-              checked={autoDialEnabled1}
-              onCheckedChange={setAutoDialEnabled1}
-              className="data-[state=checked]:bg-black"
-            />
-
-            <div className="mt-8 flex items-center justify-between">
-              <div className="text-lg font-medium">Auto Dial 911</div>
-              <Info className="w-6 h-6 text-gray-700" />
-            </div>
-            <Switch
-              checked={autoDialEnabled2}
-              onCheckedChange={setAutoDialEnabled2}
-              className="data-[state=checked]:bg-black"
-            />
-          </div>
-        </div> */}
       </main>
+
+      {/* Settings panel that slides in from the right */}
+      {isSettingsOpen && (
+        <div className="fixed top-[72px] right-0 w-80 bg-gray-100 border-l border-gray-200 p-6 overflow-y-auto transition-all duration-300 ease-in-out">
+          <h2 className="text-2xl font-medium text-gray-700 mb-6">Settings</h2>
+
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-lg font-medium mb-4">Camera Settings</h3>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span>Auto Dial 911</span>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      defaultChecked
+                    />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
+                  </label>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>Motion Detection</span>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
+                  </label>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>Emergency Alerts</span>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      defaultChecked
+                    />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
