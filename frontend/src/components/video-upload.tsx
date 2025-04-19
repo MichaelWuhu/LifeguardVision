@@ -18,20 +18,21 @@ export default function VideoUpload() {
   const [shouldPlay, setShouldPlay] = useState(false);
 
   useEffect(() => {
+    let url: string | null = null;
+  
     if (files.length > 0) {
-      const url = URL.createObjectURL(files[0]);
+      url = URL.createObjectURL(files[0]);
       setPreviewUrl(url);
     } else {
       setPreviewUrl(null);
     }
-
-    // Cleanup blob URL on unmount
+  
     return () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
+      if (url) {
+        URL.revokeObjectURL(url);
       }
     };
-  }, [files]);
+  }, [files]);  
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();

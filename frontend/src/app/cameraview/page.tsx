@@ -11,8 +11,8 @@ import {
   TooltipContent,
 } from '@/components/ui/tooltip';
 import VideoUpload from '@/components/video-upload';
-import * as dotenv from 'dotenv';
-dotenv.config();
+// import * as dotenv from 'dotenv';
+// dotenv.config();
 
 async function getDeviceName(): Promise<string> {
   const devices = await navigator.mediaDevices.enumerateDevices();
